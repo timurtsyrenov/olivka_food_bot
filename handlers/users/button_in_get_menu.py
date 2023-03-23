@@ -1,12 +1,15 @@
 from aiogram import types
 from loader import dp
 import utils
+import datetime
+
+number_today = datetime.datetime.today().weekday() + 1  # Переменная, хранящая номер сегодняшнего дня недели
 
 
 @dp.message_handler(text='/today')  # Cоздаем message handler который ловит команду /today
 async def button_today(message: types.Message):  # Создаем асинхронную функцию, которая отправляет меню на сегодня
     menu = ""
-    for item in utils.get_menu_to_list(1):
+    for item in utils.get_menu_to_list(number_today):
         menu += item + '\n'
     await message.answer(f"Меню на сегодня: \n"
                          f"{menu}")
