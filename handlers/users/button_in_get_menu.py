@@ -4,7 +4,9 @@ import utils
 import datetime
 
 number_today = datetime.datetime.today().weekday() + 1  # Переменная, хранящая номер сегодняшнего дня недели
-#number_today = 7
+
+
+# number_today = 7
 
 @dp.message_handler(text='/today')  # Cоздаем message handler который ловит команду /today
 async def button_today(message: types.Message):  # Создаем асинхронную функцию, которая отправляет меню на сегодня
