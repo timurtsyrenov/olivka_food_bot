@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup as BS
+from bs4 import BeautifulSoup
 
 '''
 Скрипт, получающий html страницу и парсящий ее в списки обедов по дням недели.
@@ -12,7 +12,7 @@ headers = {
     "X-Requested-With": 'XMLHttpRequest'
 }
 r = requests.get(url, headers=headers, timeout=30)  # посылаем запрос
-soup = BS(r.text, 'lxml')
+soup = BeautifulSoup(r.text, 'lxml')
 
 
 def get_menu_to_list(day_number):

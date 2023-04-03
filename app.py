@@ -1,5 +1,8 @@
 from aiogram import executor
 from handlers import dp
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s")
 
 
 # Основной файл
@@ -13,7 +16,7 @@ async def on_startup(dp):  # Создаем асинхронную функци�
         set_default_commands  # Импортируем функцию которая устанавливает команды для бота
     await set_default_commands(dp)
 
-    print('Бот запущен')
+    logging.info('Бот запущен')
 
 
 if __name__ == '__main__':
