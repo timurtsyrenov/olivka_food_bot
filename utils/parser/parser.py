@@ -17,16 +17,20 @@ headers = {
 
 def request_page(url_site, headers_bot):
     try:
-        r = requests.get(url=url_site, headers=headers_bot)  # посылаем запрос
+        r = requests.get(url=url_site, headers=headers_bot, timeout=10)  # посылаем запрос
         if r.content is not None:
             soup = BeautifulSoup(r.text, 'lxml')
             logging.debug(soup)
             return soup
         else:
             logging.error("Нет данных от сайта Оливки")
-            return "Нет данных от сайта Оливки"
-    except requests.exceptions.RequestException as e:
-        logging.error(e)
+            return "Нет данных от сайта Оливки"  # нужно передать админу? или всем пользователям
+    except requests.exceptions.HTTPError as e:
+        logging.error(f"HTTP error: {e}")
+    except requests.exceptions.ConnectionError as e:
+        logging.error(f"Connect error: {e}")
+    except requests.exceptions.Timeout as e:
+        logging.error(f"Timeout: {e}")
 
 
 def get_menu_to_list(day_number):
