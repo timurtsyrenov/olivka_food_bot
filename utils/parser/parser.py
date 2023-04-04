@@ -54,7 +54,7 @@ def get_menu_to_list(day_number):
     return menu_list
 
 
-request_page(url, headers)
+# request_page(url, headers)
 # monday_menu = get_menu_to_list(1)
 # tuesday_menu = get_menu_to_list(2)
 # wednesday_menu = get_menu_to_list(3)
