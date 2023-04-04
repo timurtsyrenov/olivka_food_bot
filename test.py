@@ -17,14 +17,14 @@ html_doc = 'template_html/main.html'
 soup = BeautifulSoup(open(html_doc), 'lxml')
 
 
-def get_menu_to_list(day_number):
+def get_menu_to_list(day_number: int) -> dict:
     lunch_dict = dict()
     dinner_dict = dict()
     return_dict = dict()
 
     menu = soup.find_all('div', class_=f'menu-item mix menu-category-filter c{day_number}', limit=2)
 
-    def add_to_dict(name_dict, items, price):
+    def add_to_dict(name_dict: dict, items: object, price: str) -> None:
         item_list = list()
         for item in items[1:]:
             if item.text != '':
@@ -34,13 +34,13 @@ def get_menu_to_list(day_number):
         name_dict['price'] = price
 
     for element in menu:
-        price_lunch = element.find('div', class_='item-price').text
-        if price_lunch == '450Р.':
+        item_price = element.find('div', class_='item-price').text
+        if item_price == '450Р.':
             item_lunch = element.find_all('div', class_='item-name')
-            add_to_dict(name_dict=lunch_dict, items=item_lunch, price=price_lunch)
+            add_to_dict(name_dict=lunch_dict, items=item_lunch, price=item_price)
         else:
             item_dinner = element.find_all('div', class_='item-name')
-            add_to_dict(name_dict=dinner_dict, items=item_dinner, price=price_lunch)
+            add_to_dict(name_dict=dinner_dict, items=item_dinner, price=item_price)
 
     return_dict['lunch'] = lunch_dict
     return_dict['dinner'] = dinner_dict
