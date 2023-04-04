@@ -9,9 +9,9 @@ from bs4 import BeautifulSoup
 
 url = 'https://olivkafood.ru/page/menu/6'
 headers = {
-    "User-Agent": 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
                   '(KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.2.998 Yowser/2.5 Safari/537.36',
-    "X-Requested-With": 'XMLHttpRequest'
+    'X-Requested-With': 'XMLHttpRequest'
 }
 
 
@@ -23,14 +23,14 @@ def request_page(url_site, headers_bot):
             logging.debug(soup)
             return soup
         else:
-            logging.error("Нет данных от сайта Оливки")
-            return "Нет данных от сайта Оливки"  # нужно передать админу? или всем пользователям
+            logging.error('Нет данных от сайта Оливки')
+            return 'Нет данных от сайта Оливки'  # нужно передать админу? или всем пользователям
     except requests.exceptions.HTTPError as e:
-        logging.error(f"HTTP error: {e}")
+        logging.error(f'HTTP error: {e}')
     except requests.exceptions.ConnectionError as e:
-        logging.error(f"Connect error: {e}")
+        logging.error(f'Connect error: {e}')
     except requests.exceptions.Timeout as e:
-        logging.error(f"Timeout: {e}")
+        logging.error(f'Timeout: {e}')
 
 
 def get_menu_to_list(day_number):
