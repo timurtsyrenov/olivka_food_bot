@@ -1,3 +1,3 @@
-from .parser import get_menu_to_list
+from .parser import get_menu_to_dict
 
-__all__ = ['get_menu_to_list']
+__all__ = ['get_menu_to_dict']

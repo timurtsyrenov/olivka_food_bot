@@ -33,36 +33,34 @@ def request_page(url_site, headers_bot):
         logging.error(f'Timeout: {e}')
 
 
-def get_menu_to_list(day_number):
-    menu_list = []
+def get_menu_to_dict(day_number: int) -> dict:
+    lunch_dict = dict()
+    dinner_dict = dict()
+    return_dict = dict()
+
     soup = request_page(url, headers)  # получаем html страницу
-    logging.debug(soup)
-    menu = soup.find_all('div', class_=f'menu-item mix menu-category-filter c{day_number}')
-    logging.debug(menu)
-    item_list = menu[1].find_all_next('b')
-    for n in range(len(item_list)):
-        if item_list[n].text == 'Обед до 16.00':
-            for i in range(1, 6):
-                if item_list[n + i].text.strip() == 'Морс':
-                    menu_list.append(item_list[n + i].text.strip())
-                    break
-                else:
-                    menu_list.append(item_list[n + i].text.strip())
-            break
+    # logging.debug(soup)
+
+    menu = soup.find_all('div', class_=f'menu-item mix menu-category-filter c{day_number}', limit=2)
+
+    def add_to_dict(name_dict: dict, items: object, price: str) -> None:
+        item_list = list()
+        for item in items[1:]:
+            if item.text != '':
+                item_list.append(item.text.strip())
+        name_dict['food'] = item_list
+        name_dict['name'] = items[0].text
+        name_dict['price'] = price
+
+    for element in menu:
+        item_price = element.find('div', class_='item-price').text
+        if item_price == '450Р.':
+            item_lunch = element.find_all('div', class_='item-name')
+            add_to_dict(name_dict=lunch_dict, items=item_lunch, price=item_price)
         else:
-            continue
-    return menu_list
+            item_dinner = element.find_all('div', class_='item-name')
+            add_to_dict(name_dict=dinner_dict, items=item_dinner, price=item_price)
 
-
-# request_page(url, headers)
-# monday_menu = get_menu_to_list(1)
-# tuesday_menu = get_menu_to_list(2)
-# wednesday_menu = get_menu_to_list(3)
-# thursday_menu = get_menu_to_list(4)
-# friday_menu = get_menu_to_list(5)
-
-# print(monday_menu)
-# print(tuesday_menu)
-# print(wednesday_menu)
-# print(thursday_menu)
-# print(friday_menu)
+    return_dict['lunch'] = lunch_dict
+    return_dict['dinner'] = dinner_dict
+    return return_dict

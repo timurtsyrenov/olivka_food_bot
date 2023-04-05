@@ -18,8 +18,6 @@ async def button_today(message: types.Message):  # Создаем асинхро
         await bot.send_sticker(chat_id=message.from_user.id,
                                sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E")
     else:
-        menu = ""
-        for item in utils.get_menu_to_list(number_today):
-            menu += item + '\n'
+        menu = utils.get_menu_to_dict(number_today)
         await message.answer(f'Меню на сегодня: \n'
                              f'{menu}')

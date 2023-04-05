@@ -28,7 +28,7 @@ def get_menu_to_list(day_number: int) -> dict:
         item_list = list()
         for item in items[1:]:
             if item.text != '':
-                item_list.append(item.text)
+                item_list.append(item.text.strip())
         name_dict['food'] = item_list
         name_dict['name'] = items[0].text
         name_dict['price'] = price
@@ -45,6 +45,3 @@ def get_menu_to_list(day_number: int) -> dict:
     return_dict['lunch'] = lunch_dict
     return_dict['dinner'] = dinner_dict
     return return_dict
-
-
-print(get_menu_to_list(2))
