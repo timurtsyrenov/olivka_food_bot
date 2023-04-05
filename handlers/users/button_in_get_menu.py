@@ -19,5 +19,12 @@ async def button_today(message: types.Message):  # Создаем асинхро
                                sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E")
     else:
         menu = utils.get_menu_to_dict(number_today)
-        await message.answer(f'Меню на сегодня: \n'
-                             f'{menu}')
+        menu_lunch = "\n".join(str(item) for item in menu.get("lunch").get("food"))
+        menu_dinner = "\n".join(str(item) for item in menu.get("dinner").get("food"))
+        await message.answer(
+            f'Меню на сегодня: \n'
+            f'{menu.get("lunch").get("name")} - {menu.get("lunch").get("price")}\n'
+            f'{menu_lunch}\n\n'
+            f'{menu.get("dinner").get("name")} - {menu.get("dinner").get("price")}\n'
+            f'{menu_dinner}'
+        )
