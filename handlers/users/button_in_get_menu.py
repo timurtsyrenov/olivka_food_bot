@@ -18,7 +18,6 @@ async def button_today(message: types.Message):
     """
     Асинхронная функция, которая отправляет меню на сегодня
     :parameter message: Сообщение от пользователя
-    :return: Отправляет сообщение пользователю
     """
     number_today = get_today()
     if number_today in [6, 7]:  # Проверка на субботу и воскресенье

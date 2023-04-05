@@ -1,8 +1,6 @@
 import logging
-
-import bs4
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, ResultSet
 
 '''
 Скрипт, получающий html страницу и парсящий ее в списки обедов по дням недели.
@@ -56,30 +54,30 @@ def get_menu_to_dict(day_number: int) -> dict:
     menu = soup.find_all('div', class_=f'menu-item mix menu-category-filter c{day_number}', limit=2)  # Ищем тег 'div'
     # классом 'menu-item mix menu-category-filter c{номер дня}' в запрошенной странице с указанием дня недели
 
-    def add_to_dict(name_dict: dict, items: bs4.ResultSet, price: str) -> None:
+    def add_to_dict(name_dict: dict, items: ResultSet, price: str) -> None:
         """
         Добавление данных по обедам в словарь lunch_dict или dinner_dict
         :param dict name_dict: Словарь с данными обеда за запрошенный день недели
-        :param bs4.ResultSet items: Список блюд
+        :param ResultSet items: Список блюд
         :param str price: Стоимость обеда
         """
         item_list = list()
-        for item in items[1:]:
-            if item.text != '':
-                item_list.append(item.text.strip())
-        name_dict['food'] = item_list
-        name_dict['name'] = items[0].text
-        name_dict['price'] = price
+        for item in items[1:]:  # Проходимся по списку, пропуская первый элемент т.к первый идет имя обеда
+            if item.text != '':  # Если элемент не пустой
+                item_list.append(item.text.strip())  # Добавляем в список блюдо и обрезаем пробелы
+        name_dict['food'] = item_list  # Добавляем в словарь key 'food' со значением из списка блюд
+        name_dict['name'] = items[0].text  # Добавляем в словарь key 'name' со значением имени обеда
+        name_dict['price'] = price  # Добавляем в словарь key 'price' со значением цены
 
-    for element in menu:
-        item_price = element.find('div', class_='item-price').text
-        if item_price == '450Р.':
-            item_lunch = element.find_all('div', class_='item-name')
-            add_to_dict(name_dict=lunch_dict, items=item_lunch, price=item_price)
+    for element in menu:  # Проходимся по найденным тегам и ищем в них lunch и dinner
+        item_price = element.find('div', class_='item-price').text  # поиск тега с ценой обеда
+        if item_price == '450Р.':  # Если цена обеда равна 450Р., вызываем добавляем в словарь lunch_dict
+            item_lunch = element.find_all('div', class_='item-name')  # поиск тега с названием обеда
+            add_to_dict(name_dict=lunch_dict, items=item_lunch, price=item_price)  # Добавляем в словарь lunch_dict
         else:
-            item_dinner = element.find_all('div', class_='item-name')
-            add_to_dict(name_dict=dinner_dict, items=item_dinner, price=item_price)
+            item_dinner = element.find_all('div', class_='item-name')  # поиск тега с названием обеда
+            add_to_dict(name_dict=dinner_dict, items=item_dinner, price=item_price)  # Добавляем в словарь dinner_dict
 
-    return_dict['lunch'] = lunch_dict
-    return_dict['dinner'] = dinner_dict
-    return return_dict
+    return_dict['lunch'] = lunch_dict   # Добавляем в словарь key 'lunch': словарь lunch_dict
+    return_dict['dinner'] = dinner_dict  # Добавляем в словарь key 'dinner': словарь dinner_dict
+    return return_dict  # Возвращаем итоговый словарь с двумя обедами lunch и dinner
