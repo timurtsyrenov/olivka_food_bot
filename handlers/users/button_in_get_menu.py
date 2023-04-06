@@ -15,7 +15,7 @@ def get_today() -> int:
     return today
 
 
-@dp.message_handler(text='/today')  # Cоздаем message handler который ловит команду /today
+@dp.message_handler(text="/today")  # Cоздаем message handler который ловит команду /today
 async def button_today(message: types.Message):
     """
     Асинхронная функция, которая отправляет меню на сегодня
@@ -23,9 +23,11 @@ async def button_today(message: types.Message):
     """
     number_today = get_today()
     if number_today in [6, 7]:  # Проверка на субботу и воскресенье
-        await message.answer('На выходных не кормят')
-        await bot.send_sticker(chat_id=message.from_user.id,
-                               sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E")
+        await message.answer("На выходных не кормят")
+        await bot.send_sticker(
+            chat_id=message.from_user.id,
+            sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
+        )
     else:
         menu = utils.get_menu_to_dict(number_today)
         menu_lunch = "\n".join(str(item) for item in menu.get("lunch").get("food"))  # Формируем строку за 450 рублей
