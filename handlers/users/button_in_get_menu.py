@@ -15,7 +15,9 @@ def get_today() -> int:
     return today
 
 
-@dp.message_handler(text="/today")  # Cоздаем message handler который ловит команду /today
+@dp.message_handler(
+    text="/today"
+)  # Cоздаем message handler который ловит команду /today
 async def button_today(message: types.Message):
     """
     Асинхронная функция, которая отправляет меню на сегодня
@@ -30,15 +32,22 @@ async def button_today(message: types.Message):
         )
     else:
         menu = utils.get_menu_to_dict(number_today)
-        menu_lunch = "\n".join(str(item) for item in menu.get("lunch").get("food"))  # Формируем строку за 450 рублей
+        menu_lunch = "\n".join(
+            str(item) for item in menu.get("lunch").get("food")
+        )  # Формируем строку за 450 рублей
         # из всех блюд для отправки пользователю
-        menu_dinner = "\n".join(str(item) for item in menu.get("dinner").get("food"))  # Формируем строку за 300 рублей
+        menu_dinner = "\n".join(
+            str(item) for item in menu.get("dinner").get("food")
+        )  # Формируем строку за 300 рублей
         # из всех блюд для отправки пользователю
-        menu_to_convert = f'Меню на сегодня: \n' \
-                          f'{menu.get("lunch").get("name")} - {menu.get("lunch").get("price")}\n' \
-                          f'{menu_lunch}\n\n' \
-                          f'{menu.get("dinner").get("name")} - {menu.get("dinner").get("price")}\n' \
-                          f'{menu_dinner}'
-        utils.convert_text_to_image(menu_to_convert)
-        photo_bytes = InputFile(path_or_bytesio='utils/converter/menu_image.png')
+        menu_to_convert = (
+            f"Меню на сегодня: \n"
+            f'{menu.get("lunch").get("name")} - {menu.get("lunch").get("price")}\n'
+            f"{menu_lunch}\n\n"
+            f'{menu.get("dinner").get("name")} - {menu.get("dinner").get("price")}\n'
+            f"{menu_dinner}"
+        )
+        # Преобразовываем строку с меню в изображение в виде потока байт
+        photo_bytes = utils.convert_text_to_image(menu_to_convert)
+        # Отправляем изображение с меню пользователю
         await dp.bot.send_photo(chat_id=message.chat.id, photo=photo_bytes)
