@@ -8,7 +8,7 @@ def convert_text_to_image(text: str):
     Функция преобразующая текст в изображение. Затем полученное изображение возвращает в виде
     потока байт.
     :param str text: преобразуемый текст
-    :return BeautifulSoup soup: Страница сайта
+    :return bytes result_byte_image: изображение в виде потока байт
     """
     # Создаем пустое изображение размером 400х200, цвет фона: белый
     img = Image.new("RGB", (400, 300), color=(255, 255, 255))
@@ -24,6 +24,7 @@ def convert_text_to_image(text: str):
 
     # Сохраняем и возвращаем изображение в виде потока байт
     img_byte_arr = BytesIO()
-    img.save(img_byte_arr, format='JPEG')
+    img.save(img_byte_arr, format="JPEG")
     result_byte_image = img_byte_arr.getvalue()
+    img_byte_arr.close()
     return result_byte_image
