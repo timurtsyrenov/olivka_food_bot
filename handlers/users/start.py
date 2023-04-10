@@ -10,7 +10,7 @@ from loader import bot
 @dp.message_handler(commands=["start", "menu"])
 async def start(message: types.Message):
     """
-    Отправляет сообщение Меню на: с двумя inline кнопками.
+    Отправляет сообщение "Меню на:" с двумя inline кнопками.
     :param types.Message message:
     :return:
     """
