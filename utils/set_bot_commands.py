@@ -1,9 +1,7 @@
 from aiogram import types
 
 
-# Здесь объявляем команды
-
-
+# Объявляем команды у бота
 async def set_default_commands(dp):
     await dp.bot.set_my_commands(
         [
