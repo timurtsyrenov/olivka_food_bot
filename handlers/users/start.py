@@ -3,10 +3,8 @@ import logging
 from aiogram.types import CallbackQuery, Message
 
 from keyboards.menu_keyboard import menu_keyboard
-from utils import get_menu
-from utils import get_today
-from loader import bot
-from loader import dp
+from utils import get_menu, get_today
+from loader import bot, dp
 
 
 @dp.message_handler(commands=["start", "menu"])
@@ -19,10 +17,10 @@ async def start(message: Message):
     await message.answer(text="Меню на:", reply_markup=menu_keyboard)
 
 
-@dp.callback_query_handler(lambda call: call.data == "today")
-async def handler_today(call: CallbackQuery):
+@dp.callback_query_handler(text="today")
+async def call_today(call: CallbackQuery):
     """
-    Обработчик нажатия кнопки "Сегодня".
+    Обработчик реагирует на текст "today" присылаемый от пользователя, возвращает фотографию с обедом на сегодня
     :param CallbackQuery call:
     :return:
     """
@@ -39,10 +37,10 @@ async def handler_today(call: CallbackQuery):
         await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
 
 
-@dp.callback_query_handler(lambda call: call.data == "tomorrow")
-async def handler_tomorrow(call: CallbackQuery):
+@dp.callback_query_handler(text="tomorrow")
+async def call_tomorrow(call: CallbackQuery):
     """
-    Обработчик нажатия кнопки "Завтра".
+    Обработчик реагирует на текст "tomorrow" присылаемый от пользователя, возвращает фотографию с обедом на завтра
     :param CallbackQuery call:
     :return:
     """

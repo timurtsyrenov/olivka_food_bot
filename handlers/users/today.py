@@ -1,7 +1,6 @@
 from aiogram import types
 from loader import dp, bot
-from utils import get_menu
-from utils import get_today
+from utils import get_menu, get_today
 
 
 @dp.message_handler(text="/today")  # Cоздаем message handler который ловит команду /today
