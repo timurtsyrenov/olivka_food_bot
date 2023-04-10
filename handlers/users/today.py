@@ -1,11 +1,11 @@
 from aiogram import types
 from loader import dp, bot
 from .start import get_today
-from .start import call_today
+from .start import get_menu
 
 
 @dp.message_handler(text="/today")  # Cоздаем message handler который ловит команду /today
-async def button_today(message: types.Message):
+async def today(message: types.Message):
     """
     Асинхронная функция, которая отправляет меню на сегодня
     :parameter message: Сообщение от пользователя
@@ -18,5 +18,5 @@ async def button_today(message: types.Message):
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
     else:
-        text_message = call_today(number_today)
+        text_message = get_menu(number_today)
         await message.answer(text=text_message)

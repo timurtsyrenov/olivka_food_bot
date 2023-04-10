@@ -1,6 +1,5 @@
 # Тут мы импортируем все хендлеры
-from .get_menu import dp
-from .today_and_tomorrow import dp
+from .today import dp
 from .start import dp
 import loader
 
