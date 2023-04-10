@@ -3,8 +3,8 @@ import logging
 from aiogram.types import CallbackQuery, Message
 
 from keyboards.menu_keyboard import menu_keyboard
-from utils.get_menu import get_menu
-from utils.get_time import get_today
+from utils import get_menu
+from utils import get_today
 from loader import bot
 from loader import dp
 
@@ -46,7 +46,6 @@ async def handler_tomorrow(call: CallbackQuery):
     :param CallbackQuery call:
     :return:
     """
-    logging.debug("handler_tomorrow")
     number_today = get_today() + 1
     # Если день недели больше 7, то выводим меню на понедельник
     if number_today > 7:

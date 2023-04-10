@@ -5,8 +5,8 @@ from utils.parser import get_menu_to_dict
 def get_menu(number_today: int) -> bytes:
     """
     Функция возвращает меню блюд на запрошенный день
-    :param int number_today: текущая дата в виде числа
-    :return str text_message: текущий блюд для отправки пользователю
+    :param int number_today: Текущая дата в виде числа
+    :return bytes photo_bytes: Фотография с меню
     """
     menu = get_menu_to_dict(number_today)
     menu_lunch = "\n".join(str(item) for item in menu.get("lunch").get("food"))  # Формируем строку за 450 рублей
