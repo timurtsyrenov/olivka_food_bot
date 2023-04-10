@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+# Клавиатура из двух кнопок реагирует на /menu
 menu_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [

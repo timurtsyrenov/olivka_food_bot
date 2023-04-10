@@ -23,7 +23,7 @@ async def start(message: Message):
 async def handler_today(call: CallbackQuery):
     """
     Обработчик нажатия кнопки "Сегодня".
-    :param types.CallbackQuery call:
+    :param CallbackQuery call:
     :return:
     """
     number_today = get_today()
@@ -43,7 +43,7 @@ async def handler_today(call: CallbackQuery):
 async def handler_tomorrow(call: CallbackQuery):
     """
     Обработчик нажатия кнопки "Завтра".
-    :param types.CallbackQuery call:
+    :param CallbackQuery call:
     :return:
     """
     logging.debug("handler_tomorrow")
