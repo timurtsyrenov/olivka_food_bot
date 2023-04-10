@@ -18,5 +18,5 @@ async def today(message: types.Message):
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
     else:
-        text_message = get_menu(number_today)
-        await message.answer(text=text_message)
+        photo_bytes = get_menu(number_today)
+        await message.answer_photo(photo=photo_bytes)
