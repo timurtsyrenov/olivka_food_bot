@@ -1,3 +1,3 @@
-from .get_today import get_today
+from .get_time import get_today_int, get_today_str
 
-__all__ = ["get_today"]
+__all__ = ["get_today_int", "get_today_str"]

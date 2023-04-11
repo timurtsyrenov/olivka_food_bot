@@ -1,9 +1,7 @@
-import logging
-
 from aiogram.types import CallbackQuery, Message
 
 from keyboards.menu_keyboard import menu_keyboard
-from utils import get_menu, get_today
+from utils import get_menu, get_today_int
 from loader import bot, dp
 
 
@@ -24,7 +22,7 @@ async def call_today(call: CallbackQuery):
     :param CallbackQuery call:
     :return:
     """
-    number_today = get_today()
+    number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
         await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
@@ -44,7 +42,7 @@ async def call_tomorrow(call: CallbackQuery):
     :param CallbackQuery call:
     :return:
     """
-    number_today = get_today() + 1
+    number_today = get_today_int() + 1
     # Если день недели больше 7, то выводим меню на понедельник
     if number_today > 7:
         number_today = 1
