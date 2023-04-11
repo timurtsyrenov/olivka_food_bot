@@ -1,6 +1,6 @@
 from .parser import get_menu_to_dict
 from .converter import convert_text_to_image
 from .get_menu import get_menu
-from .get_time import get_today
+from .get_time import get_today_int
 
-__all__ = ["get_menu_to_dict", "convert_text_to_image", "get_menu", "get_today"]
+__all__ = ["get_menu_to_dict", "convert_text_to_image", "get_menu", "get_today_int"]
