@@ -30,9 +30,13 @@ async def call_today(call: CallbackQuery):
             chat_id=call.from_user.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
+        # Подтверждение приема call
+        await call.answer()
     else:
         photo_bytes = get_menu(number_today)
         await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
+        # Подтверждение приема call
+        await call.answer()
 
 
 @dp.callback_query_handler(text="tomorrow")
@@ -48,6 +52,8 @@ async def call_tomorrow(call: CallbackQuery):
         number_today = 1
         photo_bytes = get_menu(number_today)
         await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
+        # Подтверждение приема call
+        await call.answer()
     # Проверка на субботу и воскресенье
     elif number_today in [6, 7]:
         await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
@@ -55,6 +61,10 @@ async def call_tomorrow(call: CallbackQuery):
             chat_id=call.from_user.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
+        # Подтверждение приема call
+        await call.answer()
     else:
         photo_bytes = get_menu(number_today)
         await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
+        # Подтверждение приема call
+        await call.answer()
