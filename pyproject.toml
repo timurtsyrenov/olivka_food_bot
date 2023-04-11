@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "olivka-food-bot"
+version = "0.1.0"
+description = "Телеграмм бот для olivkafood.ru"
+authors = ["Василиненко Вадим <me@vadim7210.ru>", "Цыренов Тимур"]
+readme = "README.md"
+packages = [{include = "olivka_food_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+python-dotenv = "^1.0.0"
+requests = "^2.28.2"
+aiogram = "^2.25.1"
+beautifulsoup4 = "^4.12.2"
+lxml = "^4.9.2"
+pillow = "^9.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
