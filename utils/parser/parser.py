@@ -1,6 +1,6 @@
-import logging
 import requests
 from bs4 import BeautifulSoup, ResultSet
+from utils.log_app import logger
 
 """
 Скрипт, получающий html страницу и парсящий ее в списки обедов по дням недели.
@@ -25,17 +25,17 @@ def request_page(url_site: str, headers_bot: dict[str, str]) -> BeautifulSoup:
         r = requests.get(url=url_site, headers=headers_bot, timeout=10)  # посылаем запрос
         if r.content is not None:
             soup = BeautifulSoup(r.text, "lxml")
-            logging.debug(soup)
+            logger.success(f"Запрос к {url} | {r.status_code}")
             return soup
         else:
-            logging.error("Нет данных от сайта Оливки")
+            logger.exception("Нет данных от сайта Оливки")
             # return 'Нет данных от сайта Оливки' # нужно передать админу? или всем пользователям
     except requests.exceptions.HTTPError as e:
-        logging.error(f"HTTP error: {e}")
+        logger.exception(f"HTTP error: {e}")
     except requests.exceptions.ConnectionError as e:
-        logging.error(f"Connect error: {e}")
+        logger.exception(f"Connect error: {e}")
     except requests.exceptions.Timeout as e:
-        logging.error(f"Timeout: {e}")
+        logger.exception(f"Timeout: {e}")
 
 
 def get_menu_to_dict(day_number: int) -> dict:
@@ -49,10 +49,10 @@ def get_menu_to_dict(day_number: int) -> dict:
     return_dict = dict()
 
     soup = request_page(url, headers)  # получаем html страницу
-    # logging.debug(soup)
 
     menu = soup.find_all("div", class_=f"menu-item mix menu-category-filter c{day_number}", limit=2)  # Ищем тег 'div'
     # классом 'menu-item mix menu-category-filter c{номер дня}' в запрошенной странице с указанием дня недели
+    logger.trace(f"menu = {menu}")
 
     def add_to_dict(name_dict: dict, items: ResultSet, price: str) -> None:
         """
@@ -80,4 +80,6 @@ def get_menu_to_dict(day_number: int) -> dict:
 
     return_dict["lunch"] = lunch_dict  # Добавляем в словарь key 'lunch': словарь lunch_dict
     return_dict["dinner"] = dinner_dict  # Добавляем в словарь key 'dinner': словарь dinner_dict
+    logger.trace(f"lunch_dict {lunch_dict}")
+    logger.trace(f"dinner_dict {dinner_dict}")
     return return_dict  # Возвращаем итоговый словарь с двумя обедами lunch и dinner

@@ -3,6 +3,7 @@ from aiogram.types import CallbackQuery, Message
 from keyboards.menu_keyboard import menu_keyboard
 from utils import get_menu, get_today_int
 from loader import bot, dp
+from utils.log_app import logger
 
 
 @dp.message_handler(commands=["start", "menu"])
@@ -12,6 +13,8 @@ async def start(message: Message):
     :param types.Message message:
     :return:
     """
+    logger.info(f"Команда: {message.text}")
+    logger.debug(f"Вызов меню: {message}")
     await message.answer(text="Меню на:", reply_markup=menu_keyboard)
 
 
@@ -22,6 +25,8 @@ async def call_today(call: CallbackQuery):
     :param CallbackQuery call:
     :return:
     """
+    logger.info(f"Команда callback: {call.data}")
+    logger.info(f"Вызов меню: {call}")
     number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
@@ -46,6 +51,8 @@ async def call_tomorrow(call: CallbackQuery):
     :param CallbackQuery call:
     :return:
     """
+    logger.info(f"Команда callback: {call.data}")
+    logger.info(f"Вызов меню: {call}")
     number_today = get_today_int() + 1
     # Если день недели больше 7, то выводим меню на понедельник
     if number_today > 7:
