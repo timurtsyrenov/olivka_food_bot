@@ -3,6 +3,7 @@ import sys
 from loguru import logger
 from data.config import LOG_LEVEL
 
+# Конфигурация логов вывод в консоль stdout и в файл server.log
 config = {
     "handlers": [
         {"sink": sys.stdout, "level": LOG_LEVEL},
