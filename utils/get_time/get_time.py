@@ -1,4 +1,5 @@
 import datetime
+from utils.log_app import logger
 
 
 def get_today_int() -> int:
@@ -7,6 +8,7 @@ def get_today_int() -> int:
     :return int today: День недели
     """
     today = datetime.datetime.today().weekday() + 1
+    logger.debug(f"today: {today}")
     return today
 
 

@@ -1,6 +1,7 @@
 from utils import convert_text_to_image
 from utils.parser import get_menu_to_dict
 from utils.get_time import get_today_str
+from utils.log_app import logger
 
 
 def get_menu(number_today: int) -> bytes:
@@ -23,5 +24,6 @@ def get_menu(number_today: int) -> bytes:
         f"{menu_dinner}"
     )
     # Преобразовываем строку с меню в изображение в виде потока байтов
+    logger.trace(f"menu_to_convert: {menu_to_convert}")
     photo_bytes = convert_text_to_image(menu_to_convert)
     return photo_bytes
