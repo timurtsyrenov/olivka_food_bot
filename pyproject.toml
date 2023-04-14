@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "Телеграмм бот для olivkafood.ru"
 authors = ["Василиненко Вадим <me@vadim7210.ru>", "Цыренов Тимур"]
 readme = "README.md"
-packages = [{include = "olivka_food_bot"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
