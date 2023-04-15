@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  olivka_food_bot:
+    build: .
+    image: "olivka_food_bot:latest"
+    container_name: "olivka_food_bot"
+    restart: always
+    command: python app.py
+    environment:
+      - BOT_TOKEN=
+      - ADMIN_ID=
+      - FONT_LINK=
+      - LOG_LEVEL=

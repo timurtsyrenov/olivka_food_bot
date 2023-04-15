@@ -2,7 +2,7 @@
 name = "olivka-food-bot"
 version = "0.1.0"
 description = "Телеграмм бот для olivkafood.ru"
-authors = ["Василиненко Вадим <me@vadim7210.ru>", "Цыренов Тимур"]
+authors = ["Vadim V. <me@vadim7210.ru>", "Timur T."]
 readme = "README.md"
 
 [tool.poetry.dependencies]
