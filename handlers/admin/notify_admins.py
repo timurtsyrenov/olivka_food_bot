@@ -1,4 +1,3 @@
-# Функция, которая отправляет сообщения админам, в случае запуска бота
 import logging
 
 from aiogram import Dispatcher
@@ -6,6 +5,7 @@ from aiogram import Dispatcher
 from data.config import ADMIN_ID
 
 
+# Функция, которая отправляет сообщения админам, в случае запуска бота
 async def on_startup_notify(dp: Dispatcher):
     try:
         text = "Бот запущен"

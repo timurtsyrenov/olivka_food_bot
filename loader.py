@@ -9,7 +9,6 @@ bot = Bot(token=config.BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = MemoryStorage()
 
 # Создаем диспетчер простых сообщений. Он будет обрабатывать входящие сообщения.
-
 dp = Dispatcher(bot, storage=storage)
 
 __all__ = ["bot", "storage", "dp"]
