@@ -1,16 +1,25 @@
 from aiogram import executor
 from handlers import dp
-from handlers.admin.notify_admins import (
-    on_startup_notify,
-)  # Импортируем функцию, которая отправляет сообщение о запуске бота всем админам
-from utils.set_bot_commands import set_default_commands  # Импортируем функцию, которая устанавливает команды для бота
+
+# Импортируем функцию, которая отправляет сообщение о запуске бота всем админам
+from handlers.admin.notify_admins import on_startup_notify
+
+# Импортируем функцию, которая устанавливает команды для бота
+from utils.set_bot_commands import set_default_commands
 from utils.log_app import logger
 
+"""
+Основной файл
+Чтобы запустить бота нуобходимо запустить данный скрипт
+"""
 
-# Основной файл
-async def on_startup(dp):  # Создаем асинхронную функцию которая будет запускаться по запуску бота
+
+# Создаем асинхронную функцию которая будет запускаться по запуску бота
+async def on_startup(dp):
+    # Отправлем сообщение админу
     await on_startup_notify(dp)
 
+    # Устанавливаем каманды для бота
     await set_default_commands(dp)
 
     logger.info("Бот запущен")

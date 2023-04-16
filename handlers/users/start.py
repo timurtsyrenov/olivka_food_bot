@@ -6,6 +6,7 @@ from loader import bot, dp
 from utils.log_app import logger
 
 
+# Cоздаем message handler, который ловит команды start и menu
 @dp.message_handler(commands=["start", "menu"])
 async def start(message: Message):
     """
@@ -18,6 +19,7 @@ async def start(message: Message):
     await message.answer(text="Меню на:", reply_markup=menu_keyboard)
 
 
+# Cоздаем message handler, который ловит команду today
 @dp.callback_query_handler(text="today")
 async def call_today(call: CallbackQuery):
     """
@@ -30,7 +32,9 @@ async def call_today(call: CallbackQuery):
     number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
-        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
+        await bot.send_message(
+            text="На выходных не кормят", chat_id=call.message.chat.id
+        )
         await bot.send_sticker(
             chat_id=call.from_user.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
@@ -38,12 +42,14 @@ async def call_today(call: CallbackQuery):
         # Подтверждение приема call
         await call.answer()
     else:
+        # Получаем и посылаем пользователю изображение с меню в виде потока байтов
         photo_bytes = get_menu(number_today)
         await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
         # Подтверждение приема call
         await call.answer()
 
 
+# Cоздаем message handler, который ловит команду tomorrow
 @dp.callback_query_handler(text="tomorrow")
 async def call_tomorrow(call: CallbackQuery):
     """
@@ -63,7 +69,9 @@ async def call_tomorrow(call: CallbackQuery):
         await call.answer()
     # Проверка на субботу и воскресенье
     elif number_today in [6, 7]:
-        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
+        await bot.send_message(
+            text="На выходных не кормят", chat_id=call.message.chat.id
+        )
         await bot.send_sticker(
             chat_id=call.from_user.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
@@ -71,6 +79,7 @@ async def call_tomorrow(call: CallbackQuery):
         # Подтверждение приема call
         await call.answer()
     else:
+        # Получаем и посылаем пользователю изображение с меню в виде потока байтов
         photo_bytes = get_menu(number_today)
         await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
         # Подтверждение приема call
