@@ -1,5 +1,6 @@
 # Тут мы импортируем все хендлеры
 from .today import dp
-from .start import dp
+from .start_and_menu import dp
 
-__all__ = ["dp"]  # Список параметров который можно импортировать из папки users
+# Список параметров который можно импортировать из папки users
+__all__ = ["dp"]

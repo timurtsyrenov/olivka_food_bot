@@ -1,6 +1,6 @@
 from aiogram.types import CallbackQuery, Message
 
-from keyboards.menu_keyboard import menu_keyboard
+from keyboards import menu_keyboard
 from utils import get_menu, get_today_int
 from loader import bot, dp
 from utils.log_app import logger
@@ -36,7 +36,7 @@ async def call_today(call: CallbackQuery):
             text="На выходных не кормят", chat_id=call.message.chat.id
         )
         await bot.send_sticker(
-            chat_id=call.from_user.id,
+            chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
         # Подтверждение приема call
@@ -73,7 +73,7 @@ async def call_tomorrow(call: CallbackQuery):
             text="На выходных не кормят", chat_id=call.message.chat.id
         )
         await bot.send_sticker(
-            chat_id=call.from_user.id,
+            chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
         # Подтверждение приема call
