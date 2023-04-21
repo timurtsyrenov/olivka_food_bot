@@ -17,7 +17,7 @@ async def today(message: types.Message):
     if number_today in [6, 7]:
         await message.answer("На выходных не кормят")
         await bot.send_sticker(
-            chat_id=message.from_user.id,
+            chat_id=message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
     else:

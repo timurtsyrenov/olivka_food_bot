@@ -6,6 +6,9 @@ from handlers.admin.notify_admins import on_startup_notify
 
 # Импортируем функцию, которая устанавливает команды для бота
 from utils.set_bot_commands import set_default_commands
+
+# Импортируем переменные, которые отправляют сообщения по расписанию
+from utils import scheduler_menu
 from utils.log_app import logger
 
 """
@@ -18,9 +21,15 @@ from utils.log_app import logger
 async def on_startup(dp):
     # Отправлем сообщение админу
     await on_startup_notify(dp)
+    logger.info("Отправлено сообщение админу о запуске бота")
 
     # Устанавливаем каманды для бота
     await set_default_commands(dp)
+    logger.info("Установлены команды для бота")
+
+    # Запускаем переменную отправляющую меню по расписанию
+    scheduler_menu.start()
+    logger.info("Запущена рассылка меню по расписанию")
 
     logger.info("Бот запущен")
 
