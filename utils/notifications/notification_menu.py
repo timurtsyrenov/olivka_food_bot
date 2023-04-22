@@ -11,10 +11,10 @@ async def send_notification_menu(bot: Bot):
     number_today = get_today_int()
     # Проверка на субботу и воскресенье, в субботу и воскресенье рассылки не будет даже если рассылка будет включена
     # на выходные
-    if not number_today in [6, 7]:
+    if number_today not in [6, 7]:
         # Получаем изображение с меню в виде потока байтов
         photo_bytes = get_menu(number_today)
         # Посылаем изображение в чаты указанные в переменной CHAT_ID
-        logger.info("Отправление меню по рассписанию")
+        logger.info("Отправка меню по расписанию")
         for chat_id in CHAT_ID:
             await bot.send_photo(chat_id=chat_id, photo=photo_bytes)

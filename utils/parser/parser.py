@@ -53,9 +53,7 @@ def get_menu_to_dict(day_number: int) -> dict:
     soup = request_page(url, headers)
     # Ищем тег 'div' классом 'menu-item mix menu-category-filter c{номер дня}'
     # в запрошенной странице с указанием дня недели
-    menu = soup.find_all(
-        "div", class_=f"menu-item mix menu-category-filter c{day_number}", limit=2
-    )
+    menu = soup.find_all("div", class_=f"menu-item mix menu-category-filter c{day_number}", limit=2)
     logger.trace(f"menu = {menu}")
 
     def add_to_dict(name_dict: dict, items: ResultSet, price: str) -> None:

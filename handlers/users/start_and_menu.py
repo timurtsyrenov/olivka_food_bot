@@ -32,9 +32,7 @@ async def call_today(call: CallbackQuery):
     number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
-        await bot.send_message(
-            text="На выходных не кормят", chat_id=call.message.chat.id
-        )
+        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
         await bot.send_sticker(
             chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
@@ -69,9 +67,7 @@ async def call_tomorrow(call: CallbackQuery):
         await call.answer()
     # Проверка на субботу и воскресенье
     elif number_today in [6, 7]:
-        await bot.send_message(
-            text="На выходных не кормят", chat_id=call.message.chat.id
-        )
+        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
         await bot.send_sticker(
             chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",

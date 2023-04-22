@@ -12,8 +12,7 @@ def convert_text_to_image(text: str) -> bytes:
     :return bytes result_byte_image: Изображение в виде потока байтов
     """
     # Создаем пустое изображение размером 400х200, цвет фона: белый
-    # img = Image.new("RGB", (400, 300), color=(255, 255, 255))
-    img = Image.open("utils/converter/background.png")
+    img = Image.open("utils/converter/background.webp")
 
     # Создаем объект ImageDraw для рисования на изображении
     draw = ImageDraw.Draw(img)
@@ -22,11 +21,11 @@ def convert_text_to_image(text: str) -> bytes:
     font = ImageFont.truetype(FONT_LINK, 20)
 
     # Рисуем текст на изображении
-    draw.text((30, 130), text, font=font, fill=(0, 0, 0))
+    draw.text((10, 50), text, font=font, fill=(0, 0, 0))
 
     # Сохраняем и возвращаем изображение в виде потока байтов
     img_byte_arr = BytesIO()
-    img.save(img_byte_arr, format="JPEG")
+    img.save(img_byte_arr, format="WEBP")
     result_byte_image = img_byte_arr.getvalue()
     img_byte_arr.close()
     return result_byte_image
