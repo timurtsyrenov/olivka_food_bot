@@ -1,7 +1,9 @@
 import sqlite3
 
+LOCATION = "olivka_food_bot.sqlite"
+
 # Инициализируем переменную базы данных и создаем ее файл
-with sqlite3.connect("olivka_food_bot.sqlite") as conn:
+with sqlite3.connect(LOCATION) as conn:
     cursor = conn.cursor()
     # Создаем таблицу, первичным ключем является chat id
     cursor.execute(
@@ -11,9 +13,9 @@ with sqlite3.connect("olivka_food_bot.sqlite") as conn:
         status INTEGER NOT NULL DEFAULT 1)
         """
     )
-    # Если мы не просто читаем, но и вносим изменения в базу данных - необходимо сохранить транзакцию
+    # Сохраняем изменения с помощью функции commit для объекта соединения
     conn.commit()
-    # Не забываем закрыть соединение с базой данных
+    # Закрыть соединение с базой данных
     conn.close()
 
 
