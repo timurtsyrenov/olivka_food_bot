@@ -11,6 +11,11 @@ with sqlite3.connect("olivka_food_bot.sqlite") as conn:
         status INTEGER NOT NULL DEFAULT 1)
         """
     )
+    # Если мы не просто читаем, но и вносим изменения в базу данных - необходимо сохранить транзакцию
+    conn.commit()
+    # Не забываем закрыть соединение с базой данных
+    conn.close()
+
 
 
 # Команда удаления таблицы
