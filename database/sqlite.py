@@ -2,13 +2,13 @@ import sqlite3 as sl
 
 # Инициализируем переменную базы данных и создаем ее файл
 with sl.connect("sqlite.db") as con:
-    cur = con.cursor()
+    cursor = con.cursor()
     # Создаем таблицу, первичным ключем является chat id
-    cur.execute(
+    cursor.execute(
         """CREATE TABLE IF NOT EXISTS notification (
         chat_id INTEGER NOT NULL PRIMARY KEY,
-        on_off INTEGER NOT NULL DEFAULT 1,
-        time TEXT NOT NULL DEFAULT "10:00")
+        time TEXT NOT NULL DEFAULT "10:00",
+        status INTEGER NOT NULL DEFAULT 1)
         """
     )
 
@@ -26,9 +26,9 @@ def create_new_user(chat_id: int):
     # Формируем данные записи
     data = [(chat_id, 1, "10:00")]
     # Подготавливаем множественный запрос
-    sql = "INSERT INTO notification (CHAT_ID, ON_OFF, TIME) values(?, ?, ?)"
+    sql = "INSERT INTO notification (CHAT_ID, TIME, STATUS) values(?, ?, ?)"
     # Загружаем данные в базу
-    cur.executemany(sql, data)
+    cursor.executemany(sql, data)
     # вывод данных
     # with db:
     #     data = db.execute("SELECT * FROM notification")
@@ -49,7 +49,7 @@ def get_user_from_table(chat_id: int):
     sql = f"SELECT * FROM notification WHERE chat_id = {chat_id}"
     # Делаем запрос в базу данных
     try:
-        result = cur.execute(sql).fetchone()
+        result = cursor.execute(sql).fetchone()
         return result
     except:
         return "Записи с таким chat id нет"
