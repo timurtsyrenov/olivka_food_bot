@@ -1,8 +1,8 @@
-import sqlite3 as sl
+import sqlite3
 
 # Инициализируем переменную базы данных и создаем ее файл
-with sl.connect("sqlite.db") as con:
-    cursor = con.cursor()
+with sqlite3.connect("olivka_food_bot.sqlite") as conn:
+    cursor = conn.cursor()
     # Создаем таблицу, первичным ключем является chat id
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS notification (
@@ -36,7 +36,7 @@ def create_new_user(chat_id: int):
     #         print(row)
 
 
-# create_new_user(123123)
+create_new_user(123123)
 
 
 def get_user_from_table(chat_id: int):
