@@ -16,7 +16,7 @@ with sqlite3.connect(LOCATION) as conn:
     # Сохраняем изменения с помощью функции commit для объекта соединения
     conn.commit()
     # Закрыть соединение с базой данных
-    conn.close()
+    # conn.close()
 
 
 
@@ -24,7 +24,7 @@ with sqlite3.connect(LOCATION) as conn:
 # cur.execute("""DROP TABLE notification""")
 
 
-def create_new_user(chat_id: int):
+def create_user(chat_id: int):
     """
     Функция добавляет нового пользователя в базу данных при вводе команды start
     :param int chat_id: chat id пользователя
@@ -43,7 +43,7 @@ def create_new_user(chat_id: int):
     #         print(row)
 
 
-create_new_user(123123)
+# create_new_user(123123)
 
 
 def get_user_from_table(chat_id: int):
