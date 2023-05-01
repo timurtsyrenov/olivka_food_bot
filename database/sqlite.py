@@ -87,13 +87,17 @@ def get_chat_id(chat_id: int, cursor):
 # print(get_user_from_table(123123))
 
 
-def on_notification(chat_id: int):
+def on_notification(chat_id: int, conn):
     """
     Функция для внесения в поле on_off значения 1(on)
     :param int chat_id: chat id пользователя
     :return:
     """
-    pass
+    cursor = conn.cursor()
+    sql = f"UPDATE notification SET status = 1 WHERE chat_id = {chat_id}"
+    cursor.execute(sql)
+    conn.commit()
+    conn.close()
 
 
 def off_notification(chat_id: int):
@@ -120,3 +124,5 @@ conn = connect_db(LOCATION)
 create_table(conn)
 conn2 = connect_db(LOCATION)
 create_chat_id(12312333, conn2)
+conn3 = connect_db(LOCATION)
+on_notification(12312333, conn3)
