@@ -2,10 +2,21 @@ import sqlite3
 
 LOCATION = "olivka_food_bot.sqlite"
 
+
 # Инициализируем переменную базы данных и создаем ее файл
-with sqlite3.connect(LOCATION) as conn:
-    cursor = conn.cursor()
+def connect_db(path):
+    with sqlite3.connect(path) as conn:
+        return conn
+        # Закрыть соединение с базой данных
+        # conn.close()
+
+
+# Команда удаления таблицы
+# cur.execute("""DROP TABLE notification""")
+
+def create_table(conn):
     # Создаем таблицу, первичным ключем является chat id
+    cursor = conn.cursor()
     cursor.execute(
         """CREATE TABLE IF NOT EXISTS notification (
         chat_id INTEGER NOT NULL PRIMARY KEY,
@@ -16,50 +27,61 @@ with sqlite3.connect(LOCATION) as conn:
     # Сохраняем изменения с помощью функции commit для объекта соединения
     conn.commit()
     # Закрыть соединение с базой данных
-    # conn.close()
+    conn.close()
 
 
-
-# Команда удаления таблицы
-# cur.execute("""DROP TABLE notification""")
-
-
-def create_user(chat_id: int):
+def create_chat_id(chat_id: int, conn):
     """
     Функция добавляет нового пользователя в базу данных при вводе команды start
     :param int chat_id: chat id пользователя
     :return:
     """
-    # Формируем данные записи
-    data = [(chat_id, 1, "10:00")]
-    # Подготавливаем множественный запрос
-    sql = "INSERT INTO notification (CHAT_ID, TIME, STATUS) values(?, ?, ?)"
-    # Загружаем данные в базу
-    cursor.executemany(sql, data)
-    # вывод данных
-    # with db:
-    #     data = db.execute("SELECT * FROM notification")
-    #     for row in data:
-    #         print(row)
+    cursor = conn.cursor()
+    if get_chat_id(chat_id, cursor) is True:
+        data = [(chat_id, "10:00", 1)]
+        # Подготавливаем множественный запрос
+        sql = "INSERT INTO notification (CHAT_ID, TIME, STATUS) values(?, ?, ?)"
+        # Загружаем данные в базу
+        cursor.executemany(sql, data)
+        # Сохраняем изменения с помощью функции commit для объекта соединения
+        conn.commit()
+        # Просмотр данных
+        data = cursor.execute("SELECT * FROM notification")
+        for row in data:
+            print(row)
+        # Закрыть соединение с базой данных
+        conn.close()
+    else:
+        print(f"такой есть уже {chat_id}")
 
 
-# create_new_user(123123)
-
-
-def get_user_from_table(chat_id: int):
+def get_chat_id(chat_id: int, cursor):
     """
     Функция проверяет наличие записи в таблице, если запись есть возвращает его настройки
     :param int chat_id: chat id пользователя
     :return: tuple result: кортеж с данными записи о пользователе
     """
-    # Подготавливаем запрос
-    sql = f"SELECT * FROM notification WHERE chat_id = {chat_id}"
-    # Делаем запрос в базу данных
-    try:
-        result = cursor.execute(sql).fetchone()
-        return result
-    except:
-        return "Записи с таким chat id нет"
+    # Формируем данные записи - почему нужно писать (chat_id,) я пока не понял, иначе не работает
+    # cursor.execute("SELECT chat_id FROM notification WHERE chat_id = ?", (chat_id,))
+    # if cursor.fetchone() is None:
+    # ...
+    # else:
+    #     print(f"такой есть уже {chat_id}")
+    #     conn.close()
+    sql = f"SELECT chat_id FROM notification WHERE chat_id = {chat_id}"
+    if cursor.execute(sql).fetchone() is None:
+        return True
+    else:
+        return False
+
+    # # Подготавливаем запрос
+    # sql = f"SELECT * FROM notification WHERE chat_id = {chat_id}"
+    # # Делаем запрос в базу данных
+    # try:
+    #     result = cursor.execute(sql).fetchone()
+    #     return result
+    # except:
+    #     return "Записи с таким chat id нет"
 
 
 # print(get_user_from_table(123123))
@@ -91,3 +113,10 @@ def set_time_notification(chat_id: int, time: str):
     :return:
     """
     pass
+
+
+
+conn = connect_db(LOCATION)
+create_table(conn)
+conn2 = connect_db(LOCATION)
+create_chat_id(12312333, conn2)
