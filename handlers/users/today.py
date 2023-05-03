@@ -21,6 +21,10 @@ async def today(message: types.Message):
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
         )
     else:
+        # Обращаемся к базе и проверяем, если на текущий день недели id_photo
+        # нету тогда делаем photo_bytes = get_menu(number_today)
+        # Отправляем изображение и забираем с него id_photo после записываем в базу
         # Получаем и посылаем пользователю изображение с меню в виде потока байтов
+        # Если id_photo есть на тек день, тогда отправляем сразу фотку
         photo_bytes = get_menu(number_today)
         await message.answer_photo(photo=photo_bytes)
