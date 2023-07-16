@@ -11,6 +11,9 @@ from utils.set_bot_commands import set_default_commands
 from utils import scheduler_menu
 from utils.log_app import logger
 
+# Импортируем функцию для создания/соединения с базой данных
+from database import connect_db
+
 """
 Основной файл
 Чтобы запустить бота необходимо запустить данный скрипт
@@ -26,6 +29,10 @@ async def on_startup(dp):
     # Устанавливаем команды для бота
     await set_default_commands(dp)
     logger.info("Установлены команды для бота")
+
+    # Подключаем базу данных
+    await connect_db()
+    logger.info("База данных подключена")
 
     # Запускаем переменную отправляющую меню по расписанию
     scheduler_menu.start()

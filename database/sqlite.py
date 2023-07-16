@@ -1,115 +1,84 @@
 import sqlite3
+from utils.log_app import logger
 
-LOCATION = "olivka_food_bot.sqlite"
+# Путь до БД
+LOCATION = "database/olivka_food_bot.sqlite"
 
 
 # Инициализируем переменную базы данных и создаем ее файл
-def connect_db(path):
-    with sqlite3.connect(path) as conn:
-        return conn
-        # Закрыть соединение с базой данных
-        # conn.close()
-
-
-# Команда удаления таблицы
-# cur.execute("""DROP TABLE notification""")
-
-def create_table(conn):
-    # Создаем таблицу, первичным ключем является chat id
-    cursor = conn.cursor()
-    cursor.execute(
+async def connect_db():
+    global db, cur
+    db = sqlite3.connect(LOCATION)
+    cur = db.cursor()
+    cur.execute(
         """CREATE TABLE IF NOT EXISTS notification (
-        chat_id INTEGER NOT NULL PRIMARY KEY,
+        chat_id INTEGER N   OT NULL PRIMARY KEY,
         time TEXT NOT NULL DEFAULT "10:00",
         status INTEGER NOT NULL DEFAULT 1)
         """
-    )
-    # Сохраняем изменения с помощью функции commit для объекта соединения
-    conn.commit()
-    # Закрыть соединение с базой данных
-    conn.close()
+        )
+    db.commit()
 
 
-def create_chat_id(chat_id: int, conn):
+async def create_chat_id(chat_id: int):
     """
     Функция добавляет нового пользователя в базу данных при вводе команды start
     :param int chat_id: chat id пользователя
     :return:
     """
-    cursor = conn.cursor()
-    if get_chat_id(chat_id, cursor) is True:
-        data = [(chat_id, "10:00", 1)]
+    user = cur.execute(f"SELECT * FROM notification WHERE chat_id == {chat_id}").fetchone()
+    if not user:
         # Подготавливаем множественный запрос
-        sql = "INSERT INTO notification (CHAT_ID, TIME, STATUS) values(?, ?, ?)"
+        sql = "INSERT INTO notification (CHAT_ID) values(?)"
         # Загружаем данные в базу
-        cursor.executemany(sql, data)
+        cur.execute(sql, [(chat_id)])
+        logger.info(f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами")
         # Сохраняем изменения с помощью функции commit для объекта соединения
-        conn.commit()
+        db.commit()
         # Просмотр данных
-        data = cursor.execute("SELECT * FROM notification")
-        for row in data:
-            print(row)
-        # Закрыть соединение с базой данных
-        conn.close()
+        # data = cur.execute("SELECT * FROM notification")
+        # for row in data:
+        #     print(row)
     else:
-        print(f"такой есть уже {chat_id}")
+        logger.info(f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных")
 
 
-def get_chat_id(chat_id: int, cursor):
+async def get_chat_id(chat_id: int):
     """
-    Функция проверяет наличие записи в таблице, если запись есть возвращает его настройки
+    Функция проверяет наличие записи в таблице, если запись есть возвращает его настройки, если нет то отправляет None
     :param int chat_id: chat id пользователя
     :return: tuple result: кортеж с данными записи о пользователе
     """
-    # Формируем данные записи - почему нужно писать (chat_id,) я пока не понял, иначе не работает
-    # cursor.execute("SELECT chat_id FROM notification WHERE chat_id = ?", (chat_id,))
-    # if cursor.fetchone() is None:
-    # ...
-    # else:
-    #     print(f"такой есть уже {chat_id}")
-    #     conn.close()
-    sql = f"SELECT chat_id FROM notification WHERE chat_id = {chat_id}"
-    if cursor.execute(sql).fetchone() is None:
-        return True
+    sql = f"SELECT * FROM notification WHERE chat_id = {chat_id}"
+    if cur.execute(sql).fetchone() is None:
+        return None
     else:
-        return False
-
-    # # Подготавливаем запрос
-    # sql = f"SELECT * FROM notification WHERE chat_id = {chat_id}"
-    # # Делаем запрос в базу данных
-    # try:
-    #     result = cursor.execute(sql).fetchone()
-    #     return result
-    # except:
-    #     return "Записи с таким chat id нет"
+        return cur.execute(sql).fetchone()
 
 
-# print(get_user_from_table(123123))
-
-
-def on_notification(chat_id: int, conn):
+async def on_notification_in_db(chat_id: int):
     """
     Функция для внесения в поле on_off значения 1(on)
     :param int chat_id: chat id пользователя
     :return:
     """
-    cursor = conn.cursor()
     sql = f"UPDATE notification SET status = 1 WHERE chat_id = {chat_id}"
-    cursor.execute(sql)
-    conn.commit()
-    conn.close()
+    cur.execute(sql)
+    db.commit()
 
 
-def off_notification(chat_id: int):
+async def off_notification_in_db(chat_id: int):
     """
     Функция для внесения в поле on_off значения 0(off)
     :param int chat_id: chat id пользователя
     :return:
     """
-    pass
+    sql = f"UPDATE notification SET status = 0 WHERE chat_id = {chat_id}"
+    cur.execute(sql)
+    db.commit()
 
 
-def set_time_notification(chat_id: int, time: str):
+async def set_time_notification_in_db(chat_id: int, time: str):
     """
     Функция для внесения в поле time пользовательского времени
     :param int chat_id: chat id пользователя
@@ -119,10 +88,7 @@ def set_time_notification(chat_id: int, time: str):
     pass
 
 
-
-conn = connect_db(LOCATION)
-create_table(conn)
-conn2 = connect_db(LOCATION)
-create_chat_id(12312333, conn2)
-conn3 = connect_db(LOCATION)
-on_notification(12312333, conn3)
+# import asyncio
+# asyncio.run(connect_db())
+# asyncio.run(create_chat_id(123))
+# print(asyncio.run(get_chat_id(123)))
