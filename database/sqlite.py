@@ -78,14 +78,16 @@ async def off_notification_in_db(chat_id: int):
     db.commit()
 
 
-async def set_time_notification_in_db(chat_id: int, time: str):
+async def set_custom_time_in_db(chat_id: int, time: str):
     """
     Функция для внесения в поле time пользовательского времени
     :param int chat_id: chat id пользователя
     :param str time: устанавливаемое время в формате HH:MM
     :return:
     """
-    pass
+    sql = "UPDATE notification SET time == '{}' WHERE chat_id == '{}'".format(time, chat_id)
+    cur.execute(sql)
+    db.commit()
 
 
 # import asyncio

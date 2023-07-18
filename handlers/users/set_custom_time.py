@@ -1,9 +1,10 @@
 from aiogram import types
 from aiogram.dispatcher import filters
 
-from loader import dp, bot
+from loader import dp
 from utils.log_app import logger
-from database import set_time_notification_in_db
+from database import set_custom_time_in_db
+from datetime import datetime
 
 
 # Cоздаем message handler, который ловит команду /set_custom_time
@@ -14,8 +15,9 @@ async def set_custom_time(message: types.Message):
     :parameter message: Сообщение от пользователя
     """
     logger.info(f"Пользователя с chat_id = {message.chat.id} хочет сменить время рассылки")
-    args = message.text.split(" ")
-    print(args[1])
-    
-    # await set_time_notification_in_db(message.chat.id)
-    # await message.answer(f"Рассылка меню по расписанию включена, сообщения будут приходить в 10:00")
+    time_str = message.text.split(" ")[1]
+    try:
+        datetime.strptime(time_str, "%H:%M")
+        await set_custom_time_in_db(message.chat.id, time_str)
+    except ValueError:
+        await message.answer("Просьба ввести время в формате: HH:MM")
