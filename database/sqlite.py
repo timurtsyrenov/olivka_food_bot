@@ -31,7 +31,7 @@ async def create_chat_id(chat_id: int):
         # Подготавливаем множественный запрос
         sql = "INSERT INTO notification (CHAT_ID) values(?)"
         # Загружаем данные в базу
-        cur.execute(sql, [(chat_id)])
+        cur.execute(sql, [chat_id])
         logger.info(f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами")
         # Сохраняем изменения с помощью функции commit для объекта соединения
         db.commit()
