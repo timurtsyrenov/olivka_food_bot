@@ -8,7 +8,7 @@ from handlers.admin.notify_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
 
 # Импортируем переменные, которые отправляют сообщения по расписанию
-from utils import scheduler_menu
+from utils import create_job
 from utils.log_app import logger
 
 # Импортируем функцию для создания/соединения с базой данных
@@ -34,8 +34,8 @@ async def on_startup(dp):
     await connect_db()
     logger.info("База данных подключена")
 
-    # Запускаем переменную отправляющую меню по расписанию
-    scheduler_menu.start()
+    # Запускаем рассылку меню по расписанию
+    create_job()
     logger.info("Запущена рассылка меню по расписанию")
 
     logger.info("Бот запущен")

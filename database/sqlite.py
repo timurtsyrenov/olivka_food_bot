@@ -16,7 +16,7 @@ async def connect_db():
         time TEXT NOT NULL DEFAULT "10:00",
         status INTEGER NOT NULL DEFAULT 1)
         """
-        )
+    )
     db.commit()
 
 
@@ -35,15 +35,19 @@ async def create_chat_id(chat_id: int):
         logger.info(f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами")
         # Сохраняем изменения с помощью функции commit для объекта соединения
         db.commit()
+        from utils.notifications import create_job
+        await create_job()
+        logger.info("Перегенерирована рассылка меню по расписанию")
         # Просмотр данных
         # data = cur.execute("SELECT * FROM notification")
         # for row in data:
         #     print(row)
     else:
-        logger.info(f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных")
+        logger.info(
+            f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных")
 
 
-async def get_chat_id(chat_id: int):
+def get_chat_id(chat_id: int):
     """
     Функция проверяет наличие записи в таблице, если запись есть возвращает его настройки, если нет то отправляет None
     :param int chat_id: chat id пользователя
@@ -90,7 +94,27 @@ async def set_custom_time_in_db(chat_id: int, time: str):
     db.commit()
 
 
+async def get_count_chats_in_db():
+    """
+    Функция возвращающая количество записей в базе данных
+    :return int: колличество записей в таблице с включенной рассылкой
+    """
+    sql = "SELECT * FROM notification WHERE status = '1'"
+    cur.execute(sql)
+    return len(cur.fetchall())
+
+def get_chats_in_db():
+    """
+    Функция возвращающая записи в базе данных
+    :return class 'sqlite3.Cursor': записи из таблицы с включенной рассылкой
+    """
+    sql = "SELECT chat_id, time FROM notification WHERE status = '1'"
+    return cur.execute(sql)
+
 # import asyncio
 # asyncio.run(connect_db())
-# asyncio.run(create_chat_id(123))
-# print(asyncio.run(get_chat_id(123)))
+# chats = asyncio.run(get_chats_in_db())
+# print(chats)
+
+# for chat_in_db in chats:
+#     print(chat_in_db)
