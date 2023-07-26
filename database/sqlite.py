@@ -38,10 +38,6 @@ async def create_chat_id(chat_id: int):
         from utils.notifications import create_job
         await create_job()
         logger.info("Перегенерирована рассылка меню по расписанию")
-        # Просмотр данных
-        # data = cur.execute("SELECT * FROM notification")
-        # for row in data:
-        #     print(row)
     else:
         logger.info(
             f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных")
@@ -62,7 +58,7 @@ def get_chat_id(chat_id: int):
 
 async def on_notification_in_db(chat_id: int):
     """
-    Функция для внесения в поле on_off значения 1(on)
+    Функция для внесения в поле status значения 1(on)
     :param int chat_id: chat id пользователя
     :return:
     """
@@ -73,7 +69,7 @@ async def on_notification_in_db(chat_id: int):
 
 async def off_notification_in_db(chat_id: int):
     """
-    Функция для внесения в поле on_off значения 0(off)
+    Функция для внесения в поле status значения 0(off)
     :param int chat_id: chat id пользователя
     :return:
     """
@@ -96,25 +92,18 @@ async def set_custom_time_in_db(chat_id: int, time: str):
 
 async def get_count_chats_in_db():
     """
-    Функция возвращающая количество записей в базе данных
+    Функция возвращающая количество записей в базе данных c включенной рассылкой
     :return int: колличество записей в таблице с включенной рассылкой
     """
     sql = "SELECT * FROM notification WHERE status = '1'"
     cur.execute(sql)
     return len(cur.fetchall())
 
+
 def get_chats_in_db():
     """
-    Функция возвращающая записи в базе данных
-    :return class 'sqlite3.Cursor': записи из таблицы с включенной рассылкой
+    Функция возвращающая записи в базе данных с включенной рассылкой
+    :return class 'sqlite3.Cursor': записи из базы данных
     """
     sql = "SELECT chat_id, time FROM notification WHERE status = '1'"
     return cur.execute(sql)
-
-# import asyncio
-# asyncio.run(connect_db())
-# chats = asyncio.run(get_chats_in_db())
-# print(chats)
-
-# for chat_in_db in chats:
-#     print(chat_in_db)

@@ -9,8 +9,6 @@ async def send_notification_menu(chat_id, bot: Bot):
     :param bot: переменная бота
     """
     number_today = get_today_int()
-    print(chat_id)
-    print("Отработала отправка")
     # Проверка на субботу и воскресенье, в субботу и воскресенье рассылки не будет даже если рассылка будет включена
     # на выходные
     if number_today not in [6, 7]:

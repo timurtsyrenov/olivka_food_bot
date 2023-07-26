@@ -35,7 +35,7 @@ async def on_startup(dp):
     logger.info("База данных подключена")
 
     # Запускаем рассылку меню по расписанию
-    create_job()
+    await create_job()
     logger.info("Запущена рассылка меню по расписанию")
 
     logger.info("Бот запущен")

@@ -4,7 +4,8 @@ from keyboards import menu_keyboard
 from utils import get_menu, get_today_int
 from loader import bot, dp
 from utils.log_app import logger
-from database import create_chat_id
+from database import create_chat_id, get_chat_id
+import emoji
 
 
 # Cоздаем message handler, который ловит команды start и menu
@@ -17,7 +18,10 @@ async def start(message: Message):
     """
     logger.info(f"Запуск бота у пользователя с id = {message.chat.id}")
     await create_chat_id(message.chat.id)
-    await message.answer("Бот запущен, уведомления по умолчанию включены по будням в 10:00")
+    time = get_chat_id(message.chat.id)[1]
+    await message.answer("Бот запущен" + emoji.emojize(' 🤖') + f"\nУведомления включены по будням в {time}"
+                         + emoji.emojize(' 💌'))
+
 
 @dp.message_handler(commands=["menu"])
 async def menu(message: Message):
@@ -29,6 +33,7 @@ async def menu(message: Message):
     logger.info(f"Команда: {message.text}")
     logger.debug(f"Вызов меню: {message}")
     await message.answer(text="Меню на:", reply_markup=menu_keyboard)
+
 
 # Cоздаем message handler, который ловит команду today
 @dp.callback_query_handler(text="today")
