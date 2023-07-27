@@ -4,6 +4,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loader import bot
 from utils.notifications.notification_menu import send_notification_menu
 from database import get_chats_in_db
+from utils.log_app import logger
 
 
 async def create_job():
@@ -22,5 +23,6 @@ async def create_job():
             minute=chat_in_db[1][-2:],
             kwargs={"chat_id": chat_in_db[0], "bot": bot},
         )
-#    scheduler_menu.print_jobs()
+    logging.info(scheduler_menu.print_jobs())
     scheduler_menu.start()
+    logger.info("Перегенерирована рассылка меню по расписанию")

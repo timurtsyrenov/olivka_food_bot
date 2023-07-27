@@ -20,27 +20,38 @@ async def connect_db():
     db.commit()
 
 
+# Функция завершения соединения с базой данных
+async def disconnect_db():
+    db.close()
+
+
 async def create_chat_id(chat_id: int):
     """
     Функция добавляет нового пользователя в базу данных при вводе команды start
     :param int chat_id: chat id пользователя
     :return:
     """
-    user = cur.execute(f"SELECT * FROM notification WHERE chat_id == {chat_id}").fetchone()
+    user = cur.execute(
+        f"SELECT * FROM notification WHERE chat_id == {chat_id}"
+    ).fetchone()
     if not user:
         # Подготавливаем множественный запрос
         sql = "INSERT INTO notification (CHAT_ID) values(?)"
         # Загружаем данные в базу
         cur.execute(sql, [chat_id])
-        logger.info(f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами")
+        logger.info(
+            f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами"
+        )
         # Сохраняем изменения с помощью функции commit для объекта соединения
         db.commit()
         from utils.notifications import create_job
+
         await create_job()
         logger.info("Перегенерирована рассылка меню по расписанию")
     else:
         logger.info(
-            f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных")
+            f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных"
+        )
 
 
 def get_chat_id(chat_id: int):
@@ -85,7 +96,9 @@ async def set_custom_time_in_db(chat_id: int, time: str):
     :param str time: устанавливаемое время в формате HH:MM
     :return:
     """
-    sql = "UPDATE notification SET time == '{}' WHERE chat_id == '{}'".format(time, chat_id)
+    sql = "UPDATE notification SET time == '{}' WHERE chat_id == '{}'".format(
+        time, chat_id
+    )
     cur.execute(sql)
     db.commit()
 
@@ -93,7 +106,7 @@ async def set_custom_time_in_db(chat_id: int, time: str):
 async def get_count_chats_in_db():
     """
     Функция возвращающая количество записей в базе данных c включенной рассылкой
-    :return int: колличество записей в таблице с включенной рассылкой
+    :return int: количество записей в таблице с включенной рассылкой
     """
     sql = "SELECT * FROM notification WHERE status = '1'"
     cur.execute(sql)

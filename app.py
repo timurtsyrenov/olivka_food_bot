@@ -12,7 +12,7 @@ from utils import create_job
 from utils.log_app import logger
 
 # Импортируем функцию для создания/соединения с базой данных
-from database import connect_db
+from database import connect_db, disconnect_db
 
 """
 Основной файл
@@ -41,5 +41,13 @@ async def on_startup(dp):
     logger.info("Бот запущен")
 
 
+# Создаем асинхронную функцию которая будет запускаться по остановке работы бота
+async def on_shutdown(dp):
+    await disconnect_db()
+    logger.info("Соединение с базой данных завершено")
+
+
 if __name__ == "__main__":
-    executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
+    executor.start_polling(
+        dp, on_startup=on_startup, on_shutdown=on_shutdown, skip_updates=True
+    )
