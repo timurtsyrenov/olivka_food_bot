@@ -14,7 +14,7 @@ async def connect_db():
         """CREATE TABLE IF NOT EXISTS notification (
         chat_id INTEGER N   OT NULL PRIMARY KEY,
         time TEXT NOT NULL DEFAULT "10:00",
-        status INTEGER NOT NULL DEFAULT 1)
+        status INTEGER NOT NULL DEFAULT 0)
         """
     )
     db.commit()
@@ -36,7 +36,7 @@ async def create_chat_id(chat_id: int):
     ).fetchone()
     if not user:
         # Подготавливаем множественный запрос
-        sql = "INSERT INTO notification (CHAT_ID) values(?)"
+        sql = "INSERT INTO notification (chat_id) values(?)"
         # Загружаем данные в базу
         cur.execute(sql, [chat_id])
         logger.info(
@@ -45,9 +45,7 @@ async def create_chat_id(chat_id: int):
         # Сохраняем изменения с помощью функции commit для объекта соединения
         db.commit()
         from utils.notifications import create_job
-
         await create_job()
-        logger.info("Перегенерирована рассылка меню по расписанию")
     else:
         logger.info(
             f"Пользователь с chat_id = {chat_id} отправил сообщение /start, но он уже был добавлен в базу данных"

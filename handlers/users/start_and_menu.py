@@ -18,11 +18,10 @@ async def start(message: Message):
     """
     logger.info(f"Запуск бота у пользователя с id = {message.chat.id}")
     await create_chat_id(message.chat.id)
-    time = get_chat_id(message.chat.id)[1]
     await message.answer(
         "Бот запущен"
         + emoji.emojize(" 🤖")
-        + f"\nУведомления включены по будням в {time}"
+        + f"\nЧто бы включить рассылку меню используйте /on_notification"
         + emoji.emojize(" 💌")
     )
 
