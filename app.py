@@ -48,8 +48,9 @@ async def on_startup(dp):
 # Создаем асинхронную функцию которая будет запускаться по остановке работы бота
 async def on_shutdown(dp):
     await disconnect_db()
-    await shutdown_scheduler()
     logger.info("Соединение с базой данных завершено")
+    await shutdown_scheduler()
+    logger.info("Планировщик отключен")
 
 
 if __name__ == "__main__":
