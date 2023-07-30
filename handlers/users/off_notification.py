@@ -2,7 +2,7 @@ from aiogram import types
 from loader import dp
 from utils.log_app import logger
 from database import off_notification_in_db
-from utils.notifications import create_job
+from utils import regenerate_scheduler
 import emoji
 
 
@@ -16,4 +16,4 @@ async def off_notification(message: types.Message):
     logger.info(f"Выключение рассылки у пользователя с chat_id = {message.chat.id}")
     await off_notification_in_db(message.chat.id)
     await message.answer(f"Рассылка меню по расписанию выключена" + emoji.emojize(" 🤐"))
-    await create_job()
+    await regenerate_scheduler()

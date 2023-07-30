@@ -4,7 +4,7 @@ from keyboards import menu_keyboard
 from utils import get_menu, get_today_int
 from loader import bot, dp
 from utils.log_app import logger
-from database import create_chat_id, get_chat_id
+from database import create_chat_id
 import emoji
 
 

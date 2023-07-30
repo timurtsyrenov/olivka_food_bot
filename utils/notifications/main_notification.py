@@ -7,13 +7,32 @@ from database import get_chats_in_db
 from utils.log_app import logger
 
 
+async def create_scheduler():
+    """
+    Функция создания планировщика
+    :return:
+    """
+    global scheduler_menu
+    scheduler_menu = AsyncIOScheduler(timezone="Asia/Novosibirsk")
+
+
+async def shutdown_scheduler():
+    """
+    Функция выключения планировщика
+    :return:
+    """
+    scheduler_menu.shutdown()
+
+
 async def create_job():
     """
     Функция генерации рассылок
     :return:
     """
-    scheduler_menu = AsyncIOScheduler(timezone="Asia/Novosibirsk")
-    chats = get_chats_in_db()
+    # Получаем список чатов из базы данных
+    chats = await get_chats_in_db()
+    # Удаляем старые задачи
+    scheduler_menu.remove_all_jobs()
     for chat_in_db in chats:
         scheduler_menu.add_job(
             send_notification_menu,
@@ -25,4 +44,14 @@ async def create_job():
         )
     logging.info(scheduler_menu.print_jobs())
     scheduler_menu.start()
+
+
+async def regenerate_scheduler():
+    """
+    Функция перегенерации рассылки меню по расписанию
+    :return:
+    """
+    await shutdown_scheduler()
+    await create_scheduler()
+    await create_job()
     logger.info("Перегенерирована рассылка меню по расписанию")

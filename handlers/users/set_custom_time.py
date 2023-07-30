@@ -5,7 +5,7 @@ from loader import dp
 from utils.log_app import logger
 from database import set_custom_time_in_db
 from datetime import datetime
-from utils.notifications import create_job
+from utils import regenerate_scheduler
 import emoji
 
 
@@ -30,7 +30,7 @@ async def set_custom_time(message: types.Message):
             logger.info(
                 f"Пользователь с chat_id = {message.chat.id} сменил время рассылки на {formatted_time}"
             )
-            await create_job()
+            await regenerate_scheduler()
         except ValueError:
             await message.answer(
                 "Необходимо ввести команду в формате /set_custom_time HH:MM"

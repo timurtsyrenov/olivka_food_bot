@@ -2,7 +2,7 @@ from aiogram import types
 from loader import dp
 from utils.log_app import logger
 from database import on_notification_in_db, get_chat_id
-from utils.notifications import create_job
+from utils import regenerate_scheduler
 import emoji
 
 
@@ -15,9 +15,9 @@ async def on_notification(message: types.Message):
     """
     logger.info(f"Включение рассылки у пользователя с chat_id = {message.chat.id}")
     await on_notification_in_db(message.chat.id)
-    time = get_chat_id(message.chat.id)[1]
+    time = await get_chat_id(message.chat.id)
     await message.answer(
-        f"Рассылка меню по расписанию включена, сообщения будут приходить в {time}"
+        f"Рассылка меню по расписанию включена, сообщения будут приходить в {time[1]}"
         + emoji.emojize(" ⏳")
     )
-    await create_job()
+    await regenerate_scheduler()

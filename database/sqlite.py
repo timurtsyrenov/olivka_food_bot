@@ -52,7 +52,7 @@ async def create_chat_id(chat_id: int):
         )
 
 
-def get_chat_id(chat_id: int):
+async def get_chat_id(chat_id: int):
     """
     Функция проверяет наличие записи в таблице, если запись есть возвращает его настройки, если нет то отправляет None
     :param int chat_id: chat id пользователя
@@ -111,7 +111,7 @@ async def get_count_chats_in_db():
     return len(cur.fetchall())
 
 
-def get_chats_in_db():
+async def get_chats_in_db():
     """
     Функция возвращающая записи в базе данных с включенной рассылкой
     :return class 'sqlite3.Cursor': записи из базы данных
