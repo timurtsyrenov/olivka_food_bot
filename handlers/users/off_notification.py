@@ -4,10 +4,13 @@ from utils.log_app import logger
 from database import off_notification_in_db
 from utils import regenerate_scheduler
 import emoji
+from utils.misc import rate_limit
+from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команду /off_notification
-@dp.message_handler(text="/off_notification")
+@rate_limit(limit=MIDDLEWARE_BAN)
+@dp.message_handler(commands=["off_notification"])
 async def off_notification(message: types.Message):
     """
     Асинхронная функция, которая предназначена для выключения рассылки меню по расписанию

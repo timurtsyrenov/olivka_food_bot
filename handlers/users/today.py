@@ -2,10 +2,13 @@ from aiogram import types
 from loader import dp, bot
 from utils import get_menu, get_today_int
 from utils.log_app import logger
+from utils.misc import rate_limit
+from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команду /today
-@dp.message_handler(text="/today")
+@rate_limit(limit=MIDDLEWARE_BAN)
+@dp.message_handler(commands=["today"])
 async def today(message: types.Message):
     """
     Асинхронная функция, которая отправляет меню на сегодня

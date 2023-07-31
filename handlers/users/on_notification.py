@@ -4,10 +4,13 @@ from utils.log_app import logger
 from database import on_notification_in_db, get_chat_id
 from utils import regenerate_scheduler
 import emoji
+from utils.misc import rate_limit
+from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команду /on_notification
-@dp.message_handler(text="/on_notification")
+@rate_limit(limit=MIDDLEWARE_BAN)
+@dp.message_handler(commands=["on_notification"])
 async def on_notification(message: types.Message):
     """
     Асинхронная функция, которая предназначена для включения рассылки меню по расписанию

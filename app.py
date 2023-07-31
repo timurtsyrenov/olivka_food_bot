@@ -1,6 +1,6 @@
 from aiogram import executor
 from handlers import dp
-
+import middlewares
 # Импортируем функцию, которая отправляет сообщение о запуске бота всем админам
 from handlers.admin.notify_admins import on_startup_notify
 
@@ -25,6 +25,10 @@ async def on_startup(dp):
     # Устанавливаем команды для бота
     await set_default_commands(dp)
     logger.info("Установлены команды для бота")
+
+    # Подключаем Middleware
+    middlewares.setup(dp)
+    logger.info("Подключен Middleware")
 
     # Подключаем базу данных
     await connect_db()

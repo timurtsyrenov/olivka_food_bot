@@ -6,9 +6,12 @@ from loader import bot, dp
 from utils.log_app import logger
 from database import create_chat_id
 import emoji
+from utils.misc import rate_limit
+from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команды start и menu
+@rate_limit(limit=MIDDLEWARE_BAN)
 @dp.message_handler(commands=["start"])
 async def start(message: Message):
     """
@@ -26,6 +29,7 @@ async def start(message: Message):
     )
 
 
+@rate_limit(limit=MIDDLEWARE_BAN)
 @dp.message_handler(commands=["menu"])
 async def menu(message: Message):
     """
