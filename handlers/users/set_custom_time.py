@@ -12,7 +12,7 @@ from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команду /set_custom_time HH:MM
-#@rate_limit(limit=MIDDLEWARE_BAN)
+@rate_limit(limit=MIDDLEWARE_BAN)
 @dp.message_handler(filters.Text(startswith="/set_custom_time"))
 async def set_custom_time(message: types.Message):
     """
