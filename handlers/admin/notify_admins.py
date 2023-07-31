@@ -5,7 +5,7 @@ from aiogram import Dispatcher
 from data.config import ADMIN_ID
 
 
-# Функция, которая отправляет сообщения админам, в случае запуска бота
+# Функция, которая отправляет сообщение админу, в случае запуска бота
 async def on_startup_notify(dp: Dispatcher):
     try:
         text = "Бот запущен"

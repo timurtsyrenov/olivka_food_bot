@@ -3,3 +3,5 @@
 __pycache__/
 test.py
 /server.log
+/database/sqlite.db-journal
+/database/olivka_food_bot.sqlite
