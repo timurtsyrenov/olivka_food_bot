@@ -7,9 +7,12 @@ from database import set_custom_time_in_db
 from datetime import datetime
 from utils import regenerate_scheduler
 import emoji
+from utils.misc import rate_limit
+from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команду /set_custom_time HH:MM
+@rate_limit(limit=MIDDLEWARE_BAN)
 @dp.message_handler(filters.Text(startswith="/set_custom_time"))
 async def set_custom_time(message: types.Message):
     """
@@ -37,7 +40,7 @@ async def set_custom_time(message: types.Message):
                 + emoji.emojize(" 🙅‍♂️")
             )
 
-    except IndexError:
+    except (IndexError, ValueError):
         await message.answer(
             "Необходимо ввести команду в формате /set_custom_time HH:MM"
             + emoji.emojize(" 🙅‍♂️")
