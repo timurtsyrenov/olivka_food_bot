@@ -18,10 +18,10 @@ def convert_text_to_image(text: str) -> bytes:
     draw = ImageDraw.Draw(img)
 
     # Загружаем шрифт и устанавливаем его размер
-    font = ImageFont.truetype(FONT_LINK, 20)
+    font = ImageFont.truetype(FONT_LINK, 26)
 
     # Рисуем текст на изображении
-    draw.text((10, 50), text, font=font, fill=(0, 0, 0))
+    draw.text(xy=(20, 80), text=text, font=font, fill=(0, 0, 0))
 
     # Сохраняем и возвращаем изображение в виде потока байтов
     img_byte_arr = BytesIO()

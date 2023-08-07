@@ -1,102 +1,104 @@
+import textwrap
 import requests
-from bs4 import BeautifulSoup, ResultSet
+from bs4 import BeautifulSoup
+
+from utils.get_time import get_today_str
 from utils.log_app import logger
 
 """
 Скрипт, получающий html страницу и парсящий ее в списки обедов по дням недели.
 """
 
-url = "https://olivkafood.ru/page/menu/6"  # Путь к странице сайта Оливки
-headers = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.2.998 Yowser/2.5 Safari/537.36",
-    "X-Requested-With": "XMLHttpRequest",
-}  # Заголовки запроса
 
-
-def request_page(url_site: str, headers_bot: dict[str, str]) -> BeautifulSoup:
+class LunchMenu:
     """
-    Получение страницы сайта, полученная через библиотеку парсинга lxml
-    :param str url_site: Адрес сайта
-    :param dict[str, str] headers_bot: Заголовки запроса
-    :return BeautifulSoup soup: Страница сайта
+    Описание класса LunchMenu.
+    Этот класс содержит метод для вывода меню обеда на день.
     """
-    try:
-        # Посылаем запрос на сайт olivkafood.ru для получения html страницы
-        r = requests.get(url=url_site, headers=headers_bot, timeout=10)
-        if r.content is not None:
-            soup = BeautifulSoup(r.text, "lxml")
-            logger.success(f"Запрос к {url} | {r.status_code}")
-            return soup
-        else:
-            logger.exception("Нет данных от сайта Оливки")
-            # return 'Нет данных от сайта Оливки' # нужно передать админу? или всем пользователям
-    except requests.exceptions.HTTPError as e:
-        logger.exception(f"HTTP error: {e}")
-    except requests.exceptions.ConnectionError as e:
-        logger.exception(f"Connect error: {e}")
-    except requests.exceptions.Timeout as e:
-        logger.exception(f"Timeout: {e}")
 
-
-def get_menu_to_dict(day_number: int) -> dict:
-    """
-    Получение состава обеда за запрашиваемый день недели
-    :param int day_number: Номер запрашиваемого дня недели
-    :return dict return_dict: Словарь с данными обеда за запрошенный день недели
-    """
-    lunch_dict = dict()
-    dinner_dict = dict()
-    return_dict = dict()
-
-    # Получаем html страницу
-    soup = request_page(url, headers)
-    # Ищем тег 'div' классом 'menu-item mix menu-category-filter c{номер дня}'
-    # в запрошенной странице с указанием дня недели
-    menu = soup.find_all("div", class_=f"menu-item mix menu-category-filter c{day_number}", limit=2)
-    logger.trace(f"menu = {menu}")
-
-    def add_to_dict(name_dict: dict, items: ResultSet, price: str) -> None:
+    def __init__(self, lunch_name, lunch_price, lunch_items, day):
         """
-        Добавление данных по обедам в словарь lunch_dict или dinner_dict
-        :param dict name_dict: Словарь с данными обеда за запрошенный день недели
-        :param ResultSet items: Список блюд
-        :param str price: Стоимость обеда
+        Конструктор класса.
+        Аргументы:
+        lunch_name -- Название обеда.
+        lunch_price -- Цена обеда.
+        lunch_items -- Список блюд на обед.
+        str_day -- День обеда.
         """
-        item_list = list()
-        # Проходимся по списку, пропуская первый элемент т.к первый идет имя обеда
-        for item in items[1:]:
-            # Если элемент не пустой
-            if item.text != "":
-                # Добавляем в список блюдо и обрезаем пробелы
-                item_list.append(item.text.strip())
-        # Добавляем в словарь key 'food' со значением из списка блюд
-        name_dict["food"] = item_list
-        # Добавляем в словарь key 'name' со значением имени обеда
-        name_dict["name"] = items[0].text
-        # Добавляем в словарь key 'price' со значением цены
-        name_dict["price"] = price
+        self.lunch_name: str = lunch_name
+        self.lunch_price: str = lunch_price
+        self.lunch_items: list = lunch_items
+        self.str_day: str = get_today_str(day)
 
-    # Проходимся по найденным тегам и ищем в них lunch и dinner
-    for element in menu:
-        # Поиск тега с ценой обеда
-        item_price = element.find("div", class_="item-price").text
-        # Если цена обеда равна 450Р., вызываем добавляем в словарь lunch_dict
-        if item_price == "450Р.":
-            # Поиск тега с названием обеда
-            item_lunch = element.find_all("div", class_="item-name")
-            # Добавляем в словарь lunch_dict
-            add_to_dict(name_dict=lunch_dict, items=item_lunch, price=item_price)
-        else:
-            # Поиск тега с названием обеда
-            item_dinner = element.find_all("div", class_="item-name")
-            # Добавляем в словарь dinner_dict
-            add_to_dict(name_dict=dinner_dict, items=item_dinner, price=item_price)
-    # Добавляем в словарь key 'lunch': словарь lunch_dict
-    return_dict["lunch"] = lunch_dict
-    # Добавляем в словарь key 'dinner': словарь dinner_dict
-    return_dict["dinner"] = dinner_dict
-    logger.trace(f"lunch_dict {lunch_dict}")
-    logger.trace(f"dinner_dict {dinner_dict}")
-    # Возвращаем итоговый словарь с двумя обедами lunch и dinner
-    return return_dict
+    def __str__(self):
+        # Два list comprehension один добавляет перенос для слов длиннее 30 символов, другой распаковывает список
+        menu = '\n'.join([item for item in [textwrap.fill(pos, 30) for pos in self.lunch_items]])
+        # Формируем результирующую строку всего меню
+        return (
+            f"Меню на {self.str_day} \n\n"
+            f"{self.lunch_name} - {self.lunch_price} \n\n"
+            f"{menu}"
+        )
+
+
+class WebParser:
+    """
+    Описание класса WebParser.
+    Этот класс содержит метод для парсинга html страницы с обедом.
+    """
+
+    def __init__(self, day: int):
+        """
+        Конструктор класса.
+        Аргументы:
+        url -- Адрес запроса.
+        headers -- Заголовки запроса.
+        day -- День обеда.
+        """
+        self.url: str = "https://olivkafood.ru/page/menu/6"
+        self.headers: dict = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                          "(KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.2.998 Yowser/2.5 Safari/537.36",
+            "X-Requested-With": "XMLHttpRequest",
+        }
+        self.day: int = day
+
+    def parse(self) -> LunchMenu:
+        """
+        Метод для парсинга и обработки данных с сайта оливки.
+        Возвращает объект класса LunchMenu с меню обеда на день.
+        :return class LunchMenu: Фотография с меню
+        """
+
+        try:
+            # Посылаем запрос на сайт olivkafood.ru для получения html страницы
+            response = requests.get(url=self.url, headers=self.headers, timeout=5)
+            if response.content is not None:
+                # Получаем html страницу
+                soup = BeautifulSoup(response.text, "lxml")
+                logger.success(f"Запрос к {self.url} | {response.status_code}")
+                # Поиск html класса menu-item mix menu-category-filter c{Номер дня}
+                menu = soup.find_all("div", class_=f"menu-item mix menu-category-filter c{self.day}", limit=2)
+                logger.trace(f"menu = {menu}")
+                # Поиск html класса item-name, содержащий названия блюд
+                items = menu[1].find_all('div', {'class': 'item-name'})
+                # Слова которые необходимо исключить
+                black_text = ['(ПРАВЫЙ БЕРЕГ)', '(ЛЕВЫЙ БЕРЕГ)']
+                # Формируем список обеда за 300 рублей из всех блюд ['Салат', 'Суп', 'Котлета', 'Морс']
+                # Используем два list comprehension 1 убирает лишние слова, 2 обрезает пробелы и убирает 0 элемент
+                lunch_items: list = [item.text.strip().replace(black_text[0], '').strip() for item in items if
+                                     item.text.strip() and black_text[1] not in item.text.strip()]
+                # Формируем строку с ценой обеда "300Р."
+                lunch_price: str = menu[1].find('div', {'class': 'item-price'}).text.strip()
+                # Формируем строку с названием обеда "Обед до 16:00"
+                lunch_name: str = lunch_items[0]
+                # Создаем объект класса LunchMenu
+                return LunchMenu(lunch_name=lunch_name,
+                                 lunch_price=lunch_price,
+                                 lunch_items=lunch_items[1:],
+                                 day=self.day)
+            else:
+                logger.exception("Нет данных от сайта Оливки")
+                # return 'Нет данных от сайта Оливки' # нужно передать админу? или всем пользователям
+        except requests.exceptions.RequestException as e:
+            logger.exception(f"HTTP error: {e}")
