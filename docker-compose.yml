@@ -7,8 +7,12 @@ services:
     container_name: "olivka_food_bot"
     restart: always
     command: python app.py
+    volumes:
+      - ./database:/olivka_food_bot/database
     environment:
       - BOT_TOKEN=
       - ADMIN_ID=
-      - FONT_LINK=
-      - LOG_LEVEL=
+      - FONT_LINK=utils/converter/Garet.ttf
+      - LOG_LEVEL=DEBUG
+      - MIDDLEWARE_BAN=15
+      - PREKOL=

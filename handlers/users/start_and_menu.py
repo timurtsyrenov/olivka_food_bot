@@ -52,6 +52,7 @@ async def call_today(call: CallbackQuery):
     """
     logger.info(f"Команда callback: {call.data}")
     logger.info(f"Вызов меню: {call}")
+    logger.debug(f"Чат ID сообщения: {call.message.chat.id}")
     number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
