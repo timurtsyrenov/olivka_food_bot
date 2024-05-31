@@ -3,10 +3,8 @@ import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from loader import bot
 from .notification_menu import send_notification_menu
-from .prekol import send_prekol
 from database import get_chats_in_db
 from utils.log_app import logger
-from data.config import PREKOL
 
 async def create_scheduler():
     """
