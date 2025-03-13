@@ -55,7 +55,7 @@ class WebParser:
         headers -- Заголовки запроса.
         day -- День обеда.
         """
-        self.url: str = "https://olivkafood.ru/page/menu/6"
+        self.url: str = "https://olivkafood.ru/catalog/biznes-lanc"
         self.headers: dict = {
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                           "(KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.2.998 Yowser/2.5 Safari/537.36",
@@ -77,25 +77,29 @@ class WebParser:
                 # Получаем html страницу
                 soup = BeautifulSoup(response.text, "lxml")
                 logger.success(f"Запрос к {self.url} | {response.status_code}")
-                # Поиск html класса menu-item mix menu-category-filter c{Номер дня}
-                menu = soup.find_all("div", class_=f"menu-item mix menu-category-filter c{self.day}", limit=2)
+                # Поиск html класса catalog-item c data-weekday={Номер дня}
+                menu = soup.find_all("div", class_="catalog-item", attrs={"data-weekday": str(self.day)}, limit=2)
                 logger.trace(f"menu = {menu}")
-                # Поиск html класса item-name, содержащий названия блюд
-                items = menu[1].find_all('div', {'class': 'item-name'})
+                # Находим описание
+                description_div = menu[1].find('div', class_='catalog-item__description')
+                # Получаем все <li> элементы
+                items = description_div.find_all('li')
+                # Извлекаем текст из <li> и формируем список
+                dishes = [item.get_text(strip=True).lstrip('-') for item in items]
                 # Слова которые необходимо исключить
                 black_text = ['(ПРАВЫЙ БЕРЕГ)', '(ЛЕВЫЙ БЕРЕГ)']
-                # Формируем список обеда за 300 рублей из всех блюд ['Салат', 'Суп', 'Котлета', 'Морс']
+                # Формируем список обеда за N рублей из всех блюд ['Салат', 'Суп', 'Котлета', 'Морс']
                 # Используем два list comprehension 1 убирает лишние слова, 2 обрезает пробелы и убирает 0 элемент
-                lunch_items: list = [item.text.strip().replace(black_text[0], '').strip() for item in items if
-                                     item.text.strip() and black_text[1] not in item.text.strip()]
-                # Формируем строку с ценой обеда "300Р."
-                lunch_price: str = menu[1].find('div', {'class': 'item-price'}).text.strip()
-                # Формируем строку с названием обеда "Обед до 16:00"
-                lunch_name: str = lunch_items[0]
+                lunch_items: list = [item.strip().replace(black_text[0], '').strip() for item in dishes if
+                                     item.strip() and black_text[1] not in item.strip()]
+                # Формируем строку с ценой обеда "N р."
+                lunch_price: str = menu[1].find('div', {'class': 'catalog-item__price'}).text.strip()
+                # Формируем строку с названием обеда "Бизнес-ланч №2"
+                lunch_name: str = menu[1].find('div', {'class': 'catalog-item__title'}).text.strip()[:-3]
                 # Создаем объект класса LunchMenu
                 return LunchMenu(lunch_name=lunch_name,
                                  lunch_price=lunch_price,
-                                 lunch_items=lunch_items[1:],
+                                 lunch_items=lunch_items,
                                  day=self.day)
             else:
                 logger.exception("Нет данных от сайта Оливки")
