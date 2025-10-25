@@ -58,10 +58,10 @@ async def get_chat_id(chat_id: int):
     """
     sql = f"SELECT * FROM notification WHERE chat_id = {chat_id}"
     if cur.execute(sql).fetchone() is None:
-        logger.info(f"Пользователя с chat_id = {chat_id} нет в базе данных")
+        logger.debug(f"Пользователя с chat_id = {chat_id} нет в базе данных")
         return None
     else:
-        logger.info(f"Пользователь с chat_id = {chat_id} найден в базе данных")
+        logger.debug(f"Пользователь с chat_id = {chat_id} найден в базе данных")
         return cur.execute(sql).fetchone()
 
 
@@ -73,7 +73,7 @@ async def on_notification_in_db(chat_id: int):
     """
     sql = f"UPDATE notification SET status = 1 WHERE chat_id = {chat_id}"
     cur.execute(sql)
-    logger.info(f"Включение рассылки в базе данных для пользователя с chat_id = {chat_id}")
+    logger.debug(f"Включение рассылки в базе данных для пользователя с chat_id = {chat_id}")
     db.commit()
 
 
@@ -85,7 +85,7 @@ async def off_notification_in_db(chat_id: int):
     """
     sql = f"UPDATE notification SET status = 0 WHERE chat_id = {chat_id}"
     cur.execute(sql)
-    logger.info(f"Выключение рассылки в базе данных для пользователя с chat_id = {chat_id}")
+    logger.debug(f"Выключение рассылки в базе данных для пользователя с chat_id = {chat_id}")
     db.commit()
 
 
@@ -98,7 +98,7 @@ async def set_custom_time_in_db(chat_id: int, time: str):
     """
     sql = "UPDATE notification SET time = ? WHERE chat_id = ?"
     cur.execute(sql, (time, chat_id))
-    logger.info(f"Установка времени рассылки в базе данных для пользователя с chat_id = {chat_id}")
+    logger.debug(f"Установка времени рассылки в базе данных для пользователя с chat_id = {chat_id}")
     db.commit()
 
 
@@ -109,7 +109,7 @@ async def get_count_chats_in_db():
     """
     sql = "SELECT * FROM notification WHERE status = '1'"
     cur.execute(sql)
-    logger.info("Получено количество записей с включенной рассылкой из базы данных")
+    logger.debug("Получено количество записей с включенной рассылкой из базы данных")
     return len(cur.fetchall())
 
 
@@ -119,6 +119,6 @@ async def get_chats_in_db():
     :return class 'sqlite3.Cursor': записи из базы данных
     """
     sql = "SELECT chat_id, time FROM notification WHERE status = '1'"
-    logger.info("Получены chat-id записей с включенной рассылкой из базы данных")
+    logger.debug("Получены chat-id записей с включенной рассылкой из базы данных")
     cur.execute(sql)
     return cur.fetchall()
