@@ -13,7 +13,7 @@ async def connect_db():
     cur = db.cursor()
     cur.execute(
         """CREATE TABLE IF NOT EXISTS notification (
-        chat_id INTEGER N   OT NULL PRIMARY KEY,
+        chat_id INTEGER NOT NULL PRIMARY KEY,
         time TEXT NOT NULL DEFAULT "10:00",
         status INTEGER NOT NULL DEFAULT 0)
         """
@@ -32,7 +32,7 @@ async def create_chat_id(chat_id: int):
     :param int chat_id: chat id пользователя
     :return:
     """
-    user = cur.execute(f"SELECT * FROM notification WHERE chat_id == {chat_id}").fetchone()
+    user = cur.execute("SELECT * FROM notification WHERE chat_id = ?", (chat_id,)).fetchone()
     if not user:
         # Подготавливаем множественный запрос
         sql = "INSERT INTO notification (chat_id) values(?)"
@@ -92,8 +92,8 @@ async def set_custom_time_in_db(chat_id: int, time: str):
     :param str time: устанавливаемое время в формате HH:MM
     :return:
     """
-    sql = "UPDATE notification SET time == '{}' WHERE chat_id == '{}'".format(time, chat_id)
-    cur.execute(sql)
+    sql = "UPDATE notification SET time = ? WHERE chat_id = ?"
+    cur.execute(sql, (time, chat_id))
     db.commit()
 
 
