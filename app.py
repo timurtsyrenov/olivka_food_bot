@@ -1,33 +1,34 @@
-from aiogram import executor
+import asyncio
+from os import getenv
+
+from aiogram import Bot, Dispatcher
+from database import connect_db, disconnect_db
+from dotenv import load_dotenv
 from handlers import dp
-import middlewares
-# Импортируем функцию, которая отправляет сообщение о запуске бота всем админам
 from handlers.admin.notify_admins import on_startup_notify
-
-# Импортируем функцию, которая устанавливает команды для бота
-from utils.set_bot_commands import set_default_commands
-
-# Импортируем переменные, которые отправляют сообщения по расписанию
+from middlewares import setup as setup_middlewares
 from utils import create_job, create_scheduler, shutdown_scheduler
 from utils.log_app import logger
+from utils.set_bot_commands import set_default_commands
 
-# Импортируем функцию для создания/соединения с базой данных
-from database import connect_db, disconnect_db
+# Загружаем переменные окружения
+load_dotenv()
 
-"""
-Основной файл
-Чтобы запустить бота необходимо запустить данный скрипт
-"""
+# Создаем экземпляр бота
+bot = Bot(token=getenv("BOT_TOKEN"))
+dispatcher = Dispatcher()
+
+# Регистрируем роутеры
+dispatcher.include_router(dp)
 
 
-# Создаем асинхронную функцию которая будет запускаться по запуску бота
-async def on_startup(dp):
-    # Устанавливаем команды для бота
-    await set_default_commands(dp)
+async def on_startup():
+    """Функция, выполняемая при запуске бота"""
+    await set_default_commands(bot)
     logger.info("Установлены команды для бота")
 
     # Подключаем Middleware
-    middlewares.setup(dp)
+    setup_middlewares(dispatcher)
     logger.info("Подключен Middleware")
 
     # Подключаем базу данных
@@ -43,21 +44,28 @@ async def on_startup(dp):
     logger.info("Запущена рассылка меню по расписанию")
 
     # Отправляем сообщение админу
-    await on_startup_notify(dp)
+    await on_startup_notify()
     logger.info("Отправлено сообщение админу о запуске бота")
 
     logger.info("Бот запущен")
 
 
-# Создаем асинхронную функцию которая будет запускаться по остановке работы бота
-async def on_shutdown(dp):
+async def on_shutdown():
+    """Функция, выполняемая при остановке бота"""
     await disconnect_db()
     logger.info("Соединение с базой данных завершено")
     await shutdown_scheduler()
     logger.info("Планировщик отключен")
 
 
+async def main():
+    await on_startup()
+
+    try:
+        await dispatcher.start_polling(bot)
+    finally:
+        await on_shutdown()
+
+
 if __name__ == "__main__":
-    executor.start_polling(
-        dp, on_startup=on_startup, on_shutdown=on_shutdown, skip_updates=True
-    )
+    asyncio.run(main())

@@ -1,13 +1,12 @@
-from aiogram import types
+from aiogram import Bot, types
 
 
-# Объявляем команды у бота
-async def set_default_commands(dp):
-    await dp.bot.set_my_commands(
+async def set_default_commands(bot: Bot):
+    await bot.set_my_commands(
         [
-            types.BotCommand("menu", "Получить меню"),
-            types.BotCommand("today", "Получить меню на сегодня"),
-            types.BotCommand("on_notification", "Включить рассылку меню"),
-            types.BotCommand("off_notification", "Выключить рассылку меню"),
+            types.BotCommand(command="start", description="Запустить бота"),
+            types.BotCommand(command="today", description="Меню на сегодня"),
+            types.BotCommand(command="on_notification", description="Включить рассылку меню"),
+            types.BotCommand(command="off_notification", description="Выключить рассылку меню"),
         ]
     )

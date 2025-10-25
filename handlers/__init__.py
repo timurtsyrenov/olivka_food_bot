@@ -1,3 +1,8 @@
-from .users import dp
+from aiogram import Router
 
-__all__ = ["dp"]
+from .users import routers as user_routers
+
+dp = Router()
+
+for r in user_routers:
+    dp.include_router(r)

@@ -1,14 +1,17 @@
-from aiogram import types
-from loader import dp, bot
+from aiogram import Router, types
+from aiogram.filters import Command
+from data.config import MIDDLEWARE_BAN
+from loader import bot
 from utils import get_menu, get_today_int
 from utils.log_app import logger
 from utils.misc import rate_limit
-from data.config import MIDDLEWARE_BAN
+
+router = Router()
 
 
 # Cоздаем message handler, который ловит команду /today
 @rate_limit(limit=MIDDLEWARE_BAN)
-@dp.message_handler(commands=["today"])
+@router.message(Command("today"))
 async def today(message: types.Message):
     """
     Асинхронная функция, которая отправляет меню на сегодня
@@ -25,5 +28,5 @@ async def today(message: types.Message):
         )
     else:
         # Получаем и посылаем пользователю изображение с меню в виде потока байтов
-        photo_bytes = get_menu(number_today)
-        await message.answer_photo(photo=photo_bytes)
+        photo_file = get_menu(number_today)
+        await message.answer_photo(photo=photo_file)

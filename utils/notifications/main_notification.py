@@ -1,63 +1,63 @@
 import logging
-
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from loader import bot
-from .notification_menu import send_notification_menu
-from database import get_chats_in_db
 from utils.log_app import logger
+from .notification_menu import send_notification_menu
+
+scheduler_menu = None  # глобальная переменная для scheduler
 
 async def create_scheduler():
     """
-    Функция создания планировщика
-    :return:
+    Создание планировщика
     """
     global scheduler_menu
-    scheduler_menu = AsyncIOScheduler(timezone="Asia/Novosibirsk")
+    if scheduler_menu is None:
+        scheduler_menu = AsyncIOScheduler(timezone="Asia/Novosibirsk")
 
 
 async def shutdown_scheduler():
     """
-    Функция выключения планировщика
-    :return:
+    Выключение планировщика
     """
-    scheduler_menu.shutdown()
+    global scheduler_menu
+    if scheduler_menu and scheduler_menu.running:
+        scheduler_menu.shutdown()
+        scheduler_menu = None
 
 
 async def create_job():
     """
-    Функция генерации рассылок
-    :return:
+    Генерация рассылок
     """
-    # Получаем список чатов из базы данных
+    global scheduler_menu
+    if scheduler_menu is None:
+        await create_scheduler()
+
+    # локальный импорт, чтобы разорвать циклический импорт
+    from database.sqlite import get_chats_in_db
+    from loader import bot
+
     chats = await get_chats_in_db()
-    # Удаляем старые задачи
     scheduler_menu.remove_all_jobs()
+
     for chat_in_db in chats:
         scheduler_menu.add_job(
             send_notification_menu,
             trigger="cron",
             day_of_week="mon-fri",
-            hour=chat_in_db[1][:2],
-            minute=chat_in_db[1][-2:],
+            hour=int(chat_in_db[1][:2]),
+            minute=int(chat_in_db[1][-2:]),
             kwargs={"chat_id": chat_in_db[0], "bot": bot},
         )
-        if chat_in_db[0] == PREKOL:
-            scheduler_menu.add_job(
-                send_prekol,
-                trigger="cron",
-                day_of_week="mon-fri",
-                hour=chat_in_db[1][:2],
-                minute=chat_in_db[1][-2:],
-                kwargs={"chat_id": chat_in_db[0], "bot": bot},
-            )
-    logging.info(scheduler_menu.print_jobs())
-    scheduler_menu.start()
+
+    logging.info("Pending jobs:\n%s", scheduler_menu.print_jobs())
+
+    if not scheduler_menu.running:
+        scheduler_menu.start()
 
 
 async def regenerate_scheduler():
     """
-    Функция перегенерации рассылки меню по расписанию
-    :return:
+    Перегенерация рассылки меню по расписанию
     """
     await shutdown_scheduler()
     await create_scheduler()

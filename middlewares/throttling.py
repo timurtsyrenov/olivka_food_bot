@@ -1,83 +1,32 @@
-import asyncio
-from aiogram import types, Dispatcher
-from aiogram.dispatcher import DEFAULT_RATE_LIMIT
-from aiogram.dispatcher.handler import CancelHandler, current_handler
-from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.utils.exceptions import Throttled
+import time
+from typing import Any, Awaitable, Callable, Dict
+
 import emoji
+from aiogram import BaseMiddleware
+from aiogram.types import Message
 
 
-# Код взят из https://docs.aiogram.dev/en/latest/examples/middleware_and_antiflood.html
 class ThrottlingMiddleware(BaseMiddleware):
-    """
-    Simple middleware
-    """
-
-    def __init__(self, limit=DEFAULT_RATE_LIMIT, key_prefix="antiflood_"):
+    def __init__(self, limit: float = 1.0):
+        super().__init__()
         self.rate_limit = limit
-        self.prefix = key_prefix
-        super(ThrottlingMiddleware, self).__init__()
+        self.last_time: Dict[int, float] = {}
 
-    async def on_process_message(self, message: types.Message, data: dict):
-        """
-        This handler is called when dispatcher receives a message
+    async def __call__(
+        self,
+        handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+        event: Message,
+        data: Dict[str, Any],
+    ) -> Any:
+        user_id = event.from_user.id
+        now = time.time()
+        last = self.last_time.get(user_id, 0)
+        delta = now - last
 
-        :param message:
-        """
-        # Get current handler
-        handler = current_handler.get()
-
-        # Get dispatcher from context
-        dispatcher = Dispatcher.get_current()
-        # If handler was configured, get rate limit and key from handler
-        if handler:
-            limit = getattr(handler, "throttling_rate_limit", self.rate_limit)
-            key = getattr(
-                handler, "throttling_key", f"{self.prefix}_{handler.__name__}"
-            )
+        # Если пользователь пишет слишком быстро — игнорируем
+        if delta < self.rate_limit:
+            await event.answer("Не так быстро, друг, дай подумоть " + emoji.emojize("🤔"))
+            return
         else:
-            limit = self.rate_limit
-            key = f"{self.prefix}_message"
-
-        # Use Dispatcher.throttle method.
-        try:
-            await dispatcher.throttle(key, rate=limit)
-        except Throttled as t:
-            # Execute action
-            await self.message_throttled(message, t)
-
-            # Cancel current handler
-            raise CancelHandler()
-
-    async def message_throttled(self, message: types.Message, throttled: Throttled):
-        """
-        Notify user only on first exceed and notify about unlocking only on last exceed
-
-        :param message:
-        :param throttled:
-        """
-        handler = current_handler.get()
-        dispatcher = Dispatcher.get_current()
-        if handler:
-            key = getattr(
-                handler, "throttling_key", f"{self.prefix}_{handler.__name__}"
-            )
-        else:
-            key = f"{self.prefix}_message"
-
-        # Calculate how many time is left till the block ends
-        delta = throttled.rate - throttled.delta
-
-        # Prevent flooding
-        if throttled.exceeded_count <= 2:
-            await message.reply("Не так быстро, друг, дай подумоть" + emoji.emojize(" 🤔"))
-
-        # Sleep.
-        await asyncio.sleep(delta)
-
-        # Check lock status
-        thr = await dispatcher.check_key(key)
-
-        # If current message is not last with current key - do not send message
-        if thr.exceeded_count == throttled.exceeded_count:
-            await message.reply("Готов к работе " + emoji.emojize(" 🫡"))
+            self.last_time[user_id] = now
+            return await handler(event, data)

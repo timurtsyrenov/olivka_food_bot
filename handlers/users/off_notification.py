@@ -1,16 +1,17 @@
-from aiogram import types
-from loader import dp
-from utils.log_app import logger
+import emoji
+from aiogram import F, Router, types
+from data.config import MIDDLEWARE_BAN
 from database import off_notification_in_db
 from utils import regenerate_scheduler
-import emoji
+from utils.log_app import logger
 from utils.misc import rate_limit
-from data.config import MIDDLEWARE_BAN
+
+router = Router()
 
 
 # Cоздаем message handler, который ловит команду /off_notification
 @rate_limit(limit=MIDDLEWARE_BAN)
-@dp.message_handler(commands=["off_notification"])
+@router.callback_query(F.data == "off_notification")
 async def off_notification(message: types.Message):
     """
     Асинхронная функция, которая предназначена для выключения рассылки меню по расписанию

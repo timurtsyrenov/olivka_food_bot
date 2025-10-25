@@ -1,18 +1,23 @@
-from aiogram.types import CallbackQuery, Message
+import io
 
-from keyboards import menu_keyboard
-from utils import get_menu, get_today_int
-from loader import bot, dp
-from utils.log_app import logger
-from database import create_chat_id
 import emoji
-from utils.misc import rate_limit
+from aiogram import F, Router, types
+from aiogram.filters import Command
+from aiogram.types import CallbackQuery, InputFile, Message
 from data.config import MIDDLEWARE_BAN
+from database import create_chat_id
+from keyboards import menu_keyboard
+from loader import bot
+from utils import get_menu, get_today_int
+from utils.log_app import logger
+from utils.misc import rate_limit
+
+router = Router()
 
 
 # Cоздаем message handler, который ловит команды start и menu
 @rate_limit(limit=MIDDLEWARE_BAN)
-@dp.message_handler(commands=["start"])
+@router.message(Command("start"))
 async def start(message: Message):
     """
     Запускает бота, и создает запись в таблице оповещений
@@ -30,7 +35,7 @@ async def start(message: Message):
 
 
 @rate_limit(limit=MIDDLEWARE_BAN)
-@dp.message_handler(commands=["menu"])
+@router.message(Command("menu"))
 async def menu(message: Message):
     """
     Отправляет сообщение "Меню на:" с двумя inline кнопками.
@@ -43,7 +48,7 @@ async def menu(message: Message):
 
 
 # Cоздаем message handler, который ловит команду today
-@dp.callback_query_handler(text="today")
+@router.callback_query(F.data == "today")
 async def call_today(call: CallbackQuery):
     """
     Обработчик реагирует на текст "today" присылаемый от пользователя, возвращает фотографию с обедом на сегодня
@@ -55,9 +60,7 @@ async def call_today(call: CallbackQuery):
     number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
-        await bot.send_message(
-            text="На выходных не кормят", chat_id=call.message.chat.id
-        )
+        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
         await bot.send_sticker(
             chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
@@ -66,14 +69,14 @@ async def call_today(call: CallbackQuery):
         await call.answer()
     else:
         # Получаем и посылаем пользователю изображение с меню в виде потока байтов
-        photo_bytes = get_menu(number_today)
-        await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
+        photo_file = get_menu(number_today)
+        await bot.send_photo(photo=photo_file, chat_id=call.message.chat.id)
         # Подтверждение приема call
         await call.answer()
 
 
 # Cоздаем message handler, который ловит команду tomorrow
-@dp.callback_query_handler(text="tomorrow")
+@router.callback_query(F.data == "tomorrow")
 async def call_tomorrow(call: CallbackQuery):
     """
     Обработчик реагирует на текст "tomorrow" присылаемый от пользователя, возвращает фотографию с обедом на завтра
@@ -86,15 +89,13 @@ async def call_tomorrow(call: CallbackQuery):
     # Если день недели больше 7, то выводим меню на понедельник
     if number_today > 7:
         number_today = 1
-        photo_bytes = get_menu(number_today)
-        await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
+        photo_file = get_menu(number_today)
+        await bot.send_photo(photo=photo_file, chat_id=call.message.chat.id)
         # Подтверждение приема call
         await call.answer()
     # Проверка на субботу и воскресенье
     elif number_today in [6, 7]:
-        await bot.send_message(
-            text="На выходных не кормят", chat_id=call.message.chat.id
-        )
+        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
         await bot.send_sticker(
             chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
@@ -103,7 +104,7 @@ async def call_tomorrow(call: CallbackQuery):
         await call.answer()
     else:
         # Получаем и посылаем пользователю изображение с меню в виде потока байтов
-        photo_bytes = get_menu(number_today)
-        await bot.send_photo(photo=photo_bytes, chat_id=call.message.chat.id)
+        photo_file = get_menu(number_today)
+        await bot.send_photo(photo=photo_file, chat_id=call.message.chat.id)
         # Подтверждение приема call
         await call.answer()
