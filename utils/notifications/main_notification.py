@@ -44,6 +44,7 @@ async def create_job():
             kwargs={"chat_id": chat_in_db[0], "bot": bot},
         )
     logging.info(scheduler_menu.print_jobs())
+    logging.info("завершение функции create_job")
     scheduler_menu.start()
 
 
@@ -52,6 +53,7 @@ async def regenerate_scheduler():
     Функция перегенерации рассылки меню по расписанию
     :return:
     """
+    logger.info("Запуск перегенерации рассылки меню по расписанию")
     await shutdown_scheduler()
     await create_scheduler()
     await create_job()

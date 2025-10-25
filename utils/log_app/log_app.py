@@ -3,6 +3,9 @@ import sys
 from data.config import LOG_LEVEL
 from loguru import logger
 
+if not LOG_LEVEL:
+    LOG_LEVEL = "DEBUG"
+
 # Конфигурация логов вывод в консоль stdout и в файл server.log
 config = {
     "handlers": [
