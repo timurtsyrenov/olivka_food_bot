@@ -1,7 +1,6 @@
 import logging
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from database import get_chats_in_db
 from loader import bot
 from utils.log_app import logger
 
@@ -31,6 +30,7 @@ async def create_job():
     :return:
     """
     # Получаем список чатов из базы данных
+    from database import get_chats_in_db
     chats = await get_chats_in_db()
     # Удаляем старые задачи
     scheduler_menu.remove_all_jobs()
