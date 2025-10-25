@@ -1,11 +1,11 @@
-from aiogram import types
-from loader import dp
-from utils.log_app import logger
-from database import on_notification_in_db, get_chat_id
-from utils import regenerate_scheduler
 import emoji
-from utils.misc import rate_limit
+from aiogram import types
 from data.config import MIDDLEWARE_BAN
+from database import get_chat_id, on_notification_in_db
+from loader import dp
+from utils import regenerate_scheduler
+from utils.log_app import logger
+from utils.misc import rate_limit
 
 
 # Cоздаем message handler, который ловит команду /on_notification
@@ -20,7 +20,6 @@ async def on_notification(message: types.Message):
     await on_notification_in_db(message.chat.id)
     time = await get_chat_id(message.chat.id)
     await message.answer(
-        f"Рассылка меню по расписанию включена, сообщения будут приходить в {time[1]}"
-        + emoji.emojize(" ⏳")
+        f"Рассылка меню по расписанию включена, сообщения будут приходить в {time[1]}" + emoji.emojize(" ⏳")
     )
     await regenerate_scheduler()

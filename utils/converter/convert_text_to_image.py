@@ -1,7 +1,7 @@
 from io import BytesIO
 
-from PIL import Image, ImageDraw, ImageFont
 from data.config import FONT_LINK
+from PIL import Image, ImageDraw, ImageFont
 
 
 def convert_text_to_image(text: str) -> bytes:

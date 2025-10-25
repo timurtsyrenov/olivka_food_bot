@@ -1,18 +1,15 @@
-from aiogram import executor
-from handlers import dp
 import middlewares
+from aiogram import executor
+# Импортируем функцию для создания/соединения с базой данных
+from database import connect_db, disconnect_db
+from handlers import dp
 # Импортируем функцию, которая отправляет сообщение о запуске бота всем админам
 from handlers.admin.notify_admins import on_startup_notify
-
-# Импортируем функцию, которая устанавливает команды для бота
-from utils.set_bot_commands import set_default_commands
-
 # Импортируем переменные, которые отправляют сообщения по расписанию
 from utils import create_job, create_scheduler, shutdown_scheduler
 from utils.log_app import logger
-
-# Импортируем функцию для создания/соединения с базой данных
-from database import connect_db, disconnect_db
+# Импортируем функцию, которая устанавливает команды для бота
+from utils.set_bot_commands import set_default_commands
 
 """
 Основной файл
@@ -58,6 +55,4 @@ async def on_shutdown(dp):
 
 
 if __name__ == "__main__":
-    executor.start_polling(
-        dp, on_startup=on_startup, on_shutdown=on_shutdown, skip_updates=True
-    )
+    executor.start_polling(dp, on_startup=on_startup, on_shutdown=on_shutdown, skip_updates=True)

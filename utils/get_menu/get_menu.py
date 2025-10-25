@@ -1,6 +1,6 @@
 from utils import convert_text_to_image
-from utils.parser import WebParser
 from utils.log_app import logger
+from utils.parser import WebParser
 
 
 def get_menu(number_today: int) -> bytes:

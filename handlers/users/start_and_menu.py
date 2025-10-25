@@ -1,13 +1,12 @@
-from aiogram.types import CallbackQuery, Message
-
-from keyboards import menu_keyboard
-from utils import get_menu, get_today_int
-from loader import bot, dp
-from utils.log_app import logger
-from database import create_chat_id
 import emoji
-from utils.misc import rate_limit
+from aiogram.types import CallbackQuery, Message
 from data.config import MIDDLEWARE_BAN
+from database import create_chat_id
+from keyboards import menu_keyboard
+from loader import bot, dp
+from utils import get_menu, get_today_int
+from utils.log_app import logger
+from utils.misc import rate_limit
 
 
 # Cоздаем message handler, который ловит команды start и menu
@@ -55,9 +54,7 @@ async def call_today(call: CallbackQuery):
     number_today = get_today_int()
     # Проверка на субботу и воскресенье
     if number_today in [6, 7]:
-        await bot.send_message(
-            text="На выходных не кормят", chat_id=call.message.chat.id
-        )
+        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
         await bot.send_sticker(
             chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",
@@ -92,9 +89,7 @@ async def call_tomorrow(call: CallbackQuery):
         await call.answer()
     # Проверка на субботу и воскресенье
     elif number_today in [6, 7]:
-        await bot.send_message(
-            text="На выходных не кормят", chat_id=call.message.chat.id
-        )
+        await bot.send_message(text="На выходных не кормят", chat_id=call.message.chat.id)
         await bot.send_sticker(
             chat_id=call.message.chat.id,
             sticker=r"CAACAgIAAxkBAAEIVUlkIH22b1zwyhnkOPttEAMkc28UeQAC8xAAAnt4yUv8CBg5xaTu4C8E",

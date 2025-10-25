@@ -1,10 +1,12 @@
 import logging
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from loader import bot
-from .notification_menu import send_notification_menu
 from database import get_chats_in_db
+from loader import bot
 from utils.log_app import logger
+
+from .notification_menu import send_notification_menu
+
 
 async def create_scheduler():
     """
@@ -41,15 +43,6 @@ async def create_job():
             minute=chat_in_db[1][-2:],
             kwargs={"chat_id": chat_in_db[0], "bot": bot},
         )
-        if chat_in_db[0] == PREKOL:
-            scheduler_menu.add_job(
-                send_prekol,
-                trigger="cron",
-                day_of_week="mon-fri",
-                hour=chat_in_db[1][:2],
-                minute=chat_in_db[1][-2:],
-                kwargs={"chat_id": chat_in_db[0], "bot": bot},
-            )
     logging.info(scheduler_menu.print_jobs())
     scheduler_menu.start()
 

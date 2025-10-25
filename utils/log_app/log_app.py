@@ -1,7 +1,7 @@
 import sys
 
-from loguru import logger
 from data.config import LOG_LEVEL
+from loguru import logger
 
 # Конфигурация логов вывод в консоль stdout и в файл server.log
 config = {

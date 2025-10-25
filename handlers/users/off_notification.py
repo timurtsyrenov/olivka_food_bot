@@ -1,11 +1,11 @@
-from aiogram import types
-from loader import dp
-from utils.log_app import logger
-from database import off_notification_in_db
-from utils import regenerate_scheduler
 import emoji
-from utils.misc import rate_limit
+from aiogram import types
 from data.config import MIDDLEWARE_BAN
+from database import off_notification_in_db
+from loader import dp
+from utils import regenerate_scheduler
+from utils.log_app import logger
+from utils.misc import rate_limit
 
 
 # Cоздаем message handler, который ловит команду /off_notification

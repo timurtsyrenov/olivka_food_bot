@@ -1,6 +1,5 @@
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-
 from data import config
 
 # Инициализируем переменную bot (token = 'токен взятый у бота BotFather')

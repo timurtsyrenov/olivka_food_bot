@@ -1,10 +1,11 @@
 import asyncio
-from aiogram import types, Dispatcher
+
+import emoji
+from aiogram import Dispatcher, types
 from aiogram.dispatcher import DEFAULT_RATE_LIMIT
 from aiogram.dispatcher.handler import CancelHandler, current_handler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.utils.exceptions import Throttled
-import emoji
 
 
 # Код взят из https://docs.aiogram.dev/en/latest/examples/middleware_and_antiflood.html
@@ -32,9 +33,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         # If handler was configured, get rate limit and key from handler
         if handler:
             limit = getattr(handler, "throttling_rate_limit", self.rate_limit)
-            key = getattr(
-                handler, "throttling_key", f"{self.prefix}_{handler.__name__}"
-            )
+            key = getattr(handler, "throttling_key", f"{self.prefix}_{handler.__name__}")
         else:
             limit = self.rate_limit
             key = f"{self.prefix}_message"
@@ -59,9 +58,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         handler = current_handler.get()
         dispatcher = Dispatcher.get_current()
         if handler:
-            key = getattr(
-                handler, "throttling_key", f"{self.prefix}_{handler.__name__}"
-            )
+            key = getattr(handler, "throttling_key", f"{self.prefix}_{handler.__name__}")
         else:
             key = f"{self.prefix}_message"
 

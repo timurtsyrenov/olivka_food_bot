@@ -1,4 +1,5 @@
 import sqlite3
+
 from utils.log_app import logger
 
 # Путь до БД
@@ -31,20 +32,17 @@ async def create_chat_id(chat_id: int):
     :param int chat_id: chat id пользователя
     :return:
     """
-    user = cur.execute(
-        f"SELECT * FROM notification WHERE chat_id == {chat_id}"
-    ).fetchone()
+    user = cur.execute(f"SELECT * FROM notification WHERE chat_id == {chat_id}").fetchone()
     if not user:
         # Подготавливаем множественный запрос
         sql = "INSERT INTO notification (chat_id) values(?)"
         # Загружаем данные в базу
         cur.execute(sql, [chat_id])
-        logger.info(
-            f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами"
-        )
+        logger.info(f"Пользователь с chat_id = {chat_id} добавлен в базу данных с дефолтными параметрами")
         # Сохраняем изменения с помощью функции commit для объекта соединения
         db.commit()
         from utils.notifications import create_job
+
         await create_job()
     else:
         logger.info(
@@ -94,9 +92,7 @@ async def set_custom_time_in_db(chat_id: int, time: str):
     :param str time: устанавливаемое время в формате HH:MM
     :return:
     """
-    sql = "UPDATE notification SET time == '{}' WHERE chat_id == '{}'".format(
-        time, chat_id
-    )
+    sql = "UPDATE notification SET time == '{}' WHERE chat_id == '{}'".format(time, chat_id)
     cur.execute(sql)
     db.commit()
 

@@ -1,9 +1,9 @@
 from aiogram import types
-from loader import dp, bot
+from data.config import MIDDLEWARE_BAN
+from loader import bot, dp
 from utils import get_menu, get_today_int
 from utils.log_app import logger
 from utils.misc import rate_limit
-from data.config import MIDDLEWARE_BAN
 
 
 # Cоздаем message handler, который ловит команду /today
