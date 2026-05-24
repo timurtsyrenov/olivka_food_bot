@@ -67,5 +67,5 @@ docker-compose up -d --build
 
 👥 Авторы
 Timur Tsyrenov — timurtsyrenov
-Vadim V. — enohpi
+Vadim Vasilinenko — enohpi
 
